@@ -44,6 +44,7 @@ namespace TimetableGui {
 	private: System::Windows::Forms::Label^  label1;
 	private: System::Windows::Forms::Button^  nextSubjectButton;
 	private: System::Windows::Forms::Button^  nextClassButton;
+	private: System::Windows::Forms::Button^  enterTeachersButton;
 
 	protected:
 
@@ -66,6 +67,7 @@ namespace TimetableGui {
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->nextSubjectButton = (gcnew System::Windows::Forms::Button());
 			this->nextClassButton = (gcnew System::Windows::Forms::Button());
+			this->enterTeachersButton = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// NextButton
@@ -120,16 +122,28 @@ namespace TimetableGui {
 			this->nextClassButton->Name = L"nextClassButton";
 			this->nextClassButton->Size = System::Drawing::Size(87, 20);
 			this->nextClassButton->TabIndex = 5;
-			this->nextClassButton->Text = L"Next Class";
+			this->nextClassButton->Text = L"Enter Class Names";
 			this->nextClassButton->UseVisualStyleBackColor = true;
 			this->nextClassButton->Visible = false;
 			this->nextClassButton->Click += gcnew System::EventHandler(this, &Setup::nextClassButton_Click);
+			// 
+			// enterTeachersButton
+			// 
+			this->enterTeachersButton->Location = System::Drawing::Point(222, 50);
+			this->enterTeachersButton->Name = L"enterTeachersButton";
+			this->enterTeachersButton->Size = System::Drawing::Size(88, 19);
+			this->enterTeachersButton->TabIndex = 6;
+			this->enterTeachersButton->Text = L"Enter Teachers";
+			this->enterTeachersButton->UseVisualStyleBackColor = true;
+			this->enterTeachersButton->Visible = false;
+			this->enterTeachersButton->Click += gcnew System::EventHandler(this, &Setup::enterTeachersButton_Click);
 			// 
 			// Setup
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(324, 139);
+			this->Controls->Add(this->enterTeachersButton);
 			this->Controls->Add(this->nextClassButton);
 			this->Controls->Add(this->nextSubjectButton);
 			this->Controls->Add(this->label1);
@@ -148,6 +162,7 @@ namespace TimetableGui {
 	}
 
 			 int hoursPageNum = 0;
+			 int teacherPageNum = 0;
 	private: System::Void NextButton_Click(System::Object^  sender, System::EventArgs^  e) {
 
 
@@ -193,18 +208,62 @@ namespace TimetableGui {
 			double tempInt;
 			tempInt = System::Convert::ToDouble(AnswerBox->Text);
 			hoursSubject.push_back(tempInt);
-			label1->Text = "Added to vecotor hoursSubject vector location " + System::Convert::ToString(hoursPageNum);
+			label1->Text = "Added to vector hoursSubject vector location " + System::Convert::ToString(hoursPageNum);
 			//label1->Text = System::Convert::ToString(hoursSubject[hoursPageNum]);
 		}
 		else {
-			label1->Text = "Got to here";
-			nextClassButton->Show();		//Show the next class button
 			nextSubjectButton->Hide();	//hide the next subject button
+			nextClassButton->Show();		//Show the next class button
+			this->QuestionLabel->Text = "List class names. e.g (7A,7B,7C)";
+			AnswerBox->Text = "";	//clear answer box text
 		}
 		hoursPageNum++;
 	}
-private: System::Void nextClassButton_Click(System::Object^  sender, System::EventArgs^  e) {
 
+private: System::Void nextClassButton_Click(System::Object^  sender, System::EventArgs^  e) {
+	String^ temp;
+	temp = System::Convert::ToString(AnswerBox->Text);	//gets the text from the answer box and saves it to temp
+
+	std::string converted_temp = msclr::interop::marshal_as< std::string >(temp); // converts from a String^ to a std::string
+	std::stringstream ss(converted_temp);
+
+	std::string str;
+
+	while (std::getline(ss, str, ','))	//puts the string into a vector 
+	{
+		groupNames.push_back(str);
+	}
+	nextClassButton->Hide();	//hide the next subject button
+	enterTeachersButton->Show();		//Show the next class button
+	temp = msclr::interop::marshal_as< String^ >(subjects[0]);
+	this->QuestionLabel->Text = "List teacher names for " + temp + " e.g (Mr Coats,Dr Lane,Miss Baker)";
+	AnswerBox->Text = "";	//clear answer box text
 }
+
+private: System::Void enterTeachersButton_Click(System::Object^  sender, System::EventArgs^  e) {
+	if (teacherPageNum < (subjects.size() - 1)) {
+		String^ temp;
+		std::vector<std::string> tempVector;
+		temp = System::Convert::ToString(AnswerBox->Text);	//gets the text from the answer box and saves it to temp
+
+		std::string converted_temp = msclr::interop::marshal_as< std::string >(temp); // converts from a String^ to a std::string
+		std::stringstream ss(converted_temp);
+
+		std::string str;
+
+		while (std::getline(ss, str, ','))	//puts the string into a vector 
+		{
+			tempVector.push_back(str);
+		}
+		teacherNames.push_back(tempVector);	//put the temp vector into the teacher names 2d vector
+		temp = msclr::interop::marshal_as< String^ >(subjects[teacherPageNum + 1]);
+		this->QuestionLabel->Text = "List teacher names for " + temp + " e.g (Mr Coats,Dr Lane,Miss Baker)";
+	}
+	else {
+
+	}
+	teacherPageNum++;
+}
+
 };
 }
