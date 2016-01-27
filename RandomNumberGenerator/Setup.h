@@ -45,6 +45,9 @@ namespace TimetableGui {
 	private: System::Windows::Forms::Button^  nextSubjectButton;
 	private: System::Windows::Forms::Button^  nextClassButton;
 	private: System::Windows::Forms::Button^  enterTeachersButton;
+	private: System::Windows::Forms::Button^  enterRoomsButton;
+	private: System::Windows::Forms::Button^  enterSubjectsButton;
+
 
 	protected:
 
@@ -68,6 +71,8 @@ namespace TimetableGui {
 			this->nextSubjectButton = (gcnew System::Windows::Forms::Button());
 			this->nextClassButton = (gcnew System::Windows::Forms::Button());
 			this->enterTeachersButton = (gcnew System::Windows::Forms::Button());
+			this->enterRoomsButton = (gcnew System::Windows::Forms::Button());
+			this->enterSubjectsButton = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// NextButton
@@ -138,11 +143,35 @@ namespace TimetableGui {
 			this->enterTeachersButton->Visible = false;
 			this->enterTeachersButton->Click += gcnew System::EventHandler(this, &Setup::enterTeachersButton_Click);
 			// 
+			// enterRoomsButton
+			// 
+			this->enterRoomsButton->Location = System::Drawing::Point(224, 49);
+			this->enterRoomsButton->Name = L"enterRoomsButton";
+			this->enterRoomsButton->Size = System::Drawing::Size(87, 20);
+			this->enterRoomsButton->TabIndex = 7;
+			this->enterRoomsButton->Text = L"Enter Rooms";
+			this->enterRoomsButton->UseVisualStyleBackColor = true;
+			this->enterRoomsButton->Visible = false;
+			this->enterRoomsButton->Click += gcnew System::EventHandler(this, &Setup::enterRoomsButton_Click);
+			// 
+			// enterSubjectsButton
+			// 
+			this->enterSubjectsButton->Location = System::Drawing::Point(224, 47);
+			this->enterSubjectsButton->Name = L"enterSubjectsButton";
+			this->enterSubjectsButton->Size = System::Drawing::Size(88, 22);
+			this->enterSubjectsButton->TabIndex = 8;
+			this->enterSubjectsButton->Text = L"Enter Subjects";
+			this->enterSubjectsButton->UseVisualStyleBackColor = true;
+			this->enterSubjectsButton->Visible = false;
+			this->enterSubjectsButton->Click += gcnew System::EventHandler(this, &Setup::enterSubjectsButton_Click);
+			// 
 			// Setup
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(324, 139);
+			this->Controls->Add(this->enterSubjectsButton);
+			this->Controls->Add(this->enterRoomsButton);
 			this->Controls->Add(this->enterTeachersButton);
 			this->Controls->Add(this->nextClassButton);
 			this->Controls->Add(this->nextSubjectButton);
@@ -163,6 +192,8 @@ namespace TimetableGui {
 
 			 int hoursPageNum = 0;
 			 int teacherPageNum = 0;
+			 int roomsPageNum = 0;
+			 int subjectsPageNum = 0;
 	private: System::Void NextButton_Click(System::Object^  sender, System::EventArgs^  e) {
 
 
@@ -207,6 +238,7 @@ namespace TimetableGui {
 			QuestionLabel->Text = "How many Hours are needed to teach " + temp + "?";
 			double tempInt;
 			tempInt = System::Convert::ToDouble(AnswerBox->Text);
+			AnswerBox->Text = ""; //clear answer box
 			hoursSubject.push_back(tempInt);
 			label1->Text = "Added to vector hoursSubject vector location " + System::Convert::ToString(hoursPageNum);
 			//label1->Text = System::Convert::ToString(hoursSubject[hoursPageNum]);
@@ -258,11 +290,76 @@ private: System::Void enterTeachersButton_Click(System::Object^  sender, System:
 		teacherNames.push_back(tempVector);	//put the temp vector into the teacher names 2d vector
 		temp = msclr::interop::marshal_as< String^ >(subjects[teacherPageNum + 1]);
 		this->QuestionLabel->Text = "List teacher names for " + temp + " e.g (Mr Coats,Dr Lane,Miss Baker)";
+		AnswerBox->Text = "";
 	}
 	else {
-
+		String^ temp;
+		enterTeachersButton->Hide();	
+		enterRoomsButton->Show();		
+		temp = msclr::interop::marshal_as< String^ >(subjects[0]);
+		this->QuestionLabel->Text = "List room names for " + temp + " e.g (M1,M2,A3)";
+		AnswerBox->Text = "";	//clear answer box text
 	}
 	teacherPageNum++;
+}
+
+private: System::Void enterRoomsButton_Click(System::Object^  sender, System::EventArgs^  e) {
+	if (roomsPageNum < (subjects.size() - 1)) {
+		String^ temp;
+		std::vector<std::string> tempVector;
+		temp = System::Convert::ToString(AnswerBox->Text);	//gets the text from the answer box and saves it to temp
+
+		std::string converted_temp = msclr::interop::marshal_as< std::string >(temp); // converts from a String^ to a std::string
+		std::stringstream ss(converted_temp);
+
+		std::string str;
+
+		while (std::getline(ss, str, ','))	//puts the string into a vector 
+		{
+			tempVector.push_back(str);
+		}
+		roomNames.push_back(tempVector);	//put the temp vector into the room names 2d vector
+		temp = msclr::interop::marshal_as< String^ >(subjects[roomsPageNum + 1]);
+		this->QuestionLabel->Text = "List room names for " + temp + " e.g (M1,M2,A3)";
+		AnswerBox->Text = "";
+	}
+	else {
+		String^ temp;
+		enterRoomsButton->Hide();	
+		enterSubjectsButton->Show();		
+		temp = msclr::interop::marshal_as< String^ >(groupNames[0]);
+		this->QuestionLabel->Text = "List subjects for class " + temp + " e.g (Maths,English,Science)";
+		AnswerBox->Text = "";	//clear answer box text
+	}
+	roomsPageNum++;
+}
+
+private: System::Void enterSubjectsButton_Click(System::Object^  sender, System::EventArgs^  e) {
+	if (subjectsPageNum < (groupNames.size() - 1)) {
+		String^ temp;
+		std::vector<std::string> tempVector;
+		temp = System::Convert::ToString(AnswerBox->Text);	//gets the text from the answer box and saves it to temp
+
+		std::string converted_temp = msclr::interop::marshal_as< std::string >(temp); // converts from a String^ to a std::string
+		std::stringstream ss(converted_temp);
+
+		std::string str;
+
+		while (std::getline(ss, str, ','))	//puts the string into a vector 
+		{
+			tempVector.push_back(str);
+		}
+		roomNames.push_back(tempVector);	//put the temp vector into the room names 2d vector
+		temp = msclr::interop::marshal_as< String^ >(groupNames[subjectsPageNum + 1]);
+		this->QuestionLabel->Text = "List subjects for class" + temp + " e.g (Maths,English,Science)";
+		AnswerBox->Text = "";
+	}
+	else {
+		this->QuestionLabel->Text = "Set-up Finished";
+		AnswerBox->Text = "";	//clear answer box text
+
+		}
+	subjectsPageNum++;
 }
 
 };
