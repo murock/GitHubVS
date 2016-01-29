@@ -221,11 +221,17 @@ namespace TimetableGui {
 		    temp = msclr::interop::marshal_as< String^ >(subjects[0]);
 			QuestionLabel->Text = "How many Hours are needed to teach " + temp + "?";
 			AnswerBox->Text = "";
+
 			/*
+			std::string test = "hello";			
+
+			_RPT1(0, "The test variable is %s\n",test.c_str());  //prints to output
+
+
 			std::vector<std::string>::const_iterator iter;
 			for (iter = subjects.begin(); iter != subjects.end() ; ++iter) {		//iterates through the subjects vector
 				temp = msclr::interop::marshal_as< String^ >(*iter);
-				QuestionLabel->Text = "How many Hours are needed to teach " + temp + "?";
+
 
 
 			}*/

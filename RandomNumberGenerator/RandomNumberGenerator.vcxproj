@@ -141,6 +141,7 @@
     <ClCompile Include="mylib.cpp" />
     <ClCompile Include="Setup.cpp" />
     <ClCompile Include="TeacherSetup.cpp" />
+    <ClCompile Include="TimetableGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyForm.h">

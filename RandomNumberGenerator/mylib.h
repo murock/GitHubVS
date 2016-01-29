@@ -11,4 +11,5 @@ extern std::vector<std::string> groupNames; //class names
 extern std::vector<std::vector<std::string>> teacherNames;	//teachers names with respect to subject
 extern std::vector<std::vector<std::string>> roomNames; //room names with respect to subject
 extern std::vector<std::vector<std::string>> subjectsTaken; //subjects taken with respect to class's(groupNames)
+extern std::vector<std::vector<std::string>> timetables; //stores the timetables for each class
 #endif
