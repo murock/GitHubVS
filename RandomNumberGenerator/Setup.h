@@ -225,6 +225,7 @@ namespace TimetableGui {
 			/*
 			std::string test = "hello";			
 
+
 			_RPT1(0, "The test variable is %s\n",test.c_str());  //prints to output
 
 

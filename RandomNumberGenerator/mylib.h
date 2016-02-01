@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <msclr/marshal_cppstd.h>
+//#include <algorithm>    // std::find
 #ifndef MYLIB_H
 #define MYLIB_H
 extern std::vector<std::string> subjects;

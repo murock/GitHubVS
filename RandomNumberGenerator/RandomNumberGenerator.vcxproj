@@ -154,6 +154,7 @@
     <ClInclude Include="TeacherSetup.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="TimetableGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MyForm.resx">

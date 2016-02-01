@@ -44,6 +44,9 @@
     <ClInclude Include="mylib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TimetableGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MyForm.resx">
