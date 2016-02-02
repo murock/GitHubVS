@@ -1,6 +1,6 @@
 #pragma once
 #include "mylib.h"
-
+#include "TimetableGenerator.h"
 
 
 namespace TimetableGui {
@@ -196,9 +196,12 @@ namespace TimetableGui {
 			 int subjectsPageNum = 0;
 	private: System::Void NextButton_Click(System::Object^  sender, System::EventArgs^  e) {
 
+		_RPT0(0, "Button Pressed\n");
+			DefaultValues();
+		_RPT0(0, "Default values generated\n");
+			Generate();
 
-
-			String^ temp;
+	/*		String^ temp;
 			temp = System::Convert::ToString(AnswerBox->Text);	//gets the text from the answer box and saves it to temp
 
 			std::string converted_temp = msclr::interop::marshal_as< std::string >(temp); // converts from a String^ to a std::string
@@ -240,6 +243,7 @@ namespace TimetableGui {
 	}
 
 	private: System::Void nextSubjectButton_Click(System::Object^  sender, System::EventArgs^  e) {
+
 		if (hoursPageNum < (subjects.size() -1)) {
 			String^ temp = msclr::interop::marshal_as< String^ >(subjects[hoursPageNum+1]); 
 			QuestionLabel->Text = "How many Hours are needed to teach " + temp + "?";

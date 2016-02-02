@@ -2,14 +2,6 @@
 #include <time.h>
 #include "TimetableGenerator.h"
 
-/*extern std::vector<std::string> subjects;
-extern std::vector<int> hoursSubject;
-extern std::vector<std::string> groupNames; //class names
-extern std::vector<std::vector<std::string>> teacherNames;	//teachers names with respect to subject
-extern std::vector<std::vector<std::string>> roomNames; //room names with respect to subject
-extern std::vector<std::vector<std::string>> subjectsTaken; //subjects taken with respect to class's(groupNames)
-extern std::vector<std::vector<std::string>> timetables; //stores the timetables for each class */
-
 
 
 void Generate(){
@@ -35,10 +27,9 @@ void Generate(){
 		while (periodCount < totalHours) {		//while there are still unallocated periods
 			std::vector<std::string> currentTeachers;	//store the teachers who are teaching this period already
 			int Rnum = rand();
-			/*std::vector<std::string> temp = subjectsTaken[groupCount] could use this to get size, may have to check the below code gives the size of the vector within the vector */
-			int num = (Rnum % subjects[groupCount].size());		//get a random number between  0 and the total number of subjects 
-			_RPT1(0, "The test variable is %d\n", num);
-			std::vector<std::string> subjectsTakenByCurrentGroup = subjectsTaken[groupCount];
+			int num = (Rnum % subjects.size());		//get a random number between  0 and the total number of (subjects-1)  tick
+			//_RPT1(0, "The test variable is %d\n", num);
+			std::vector<std::string> subjectsTakenByCurrentGroup = subjectsTaken[groupCount]; //gets the subjects taken by the current group   tick
 			if (std::find(subjectsTakenByCurrentGroup.begin(), subjectsTakenByCurrentGroup.end(), subjects[num]) !=subjectsTakenByCurrentGroup.end()) {			//check to make sure the current subject is taken by the current group
 				std::vector<int> tempHoursPerSubjectGroup = hoursPerSubjectGroup[groupCount];
 				if (hoursSubject[num] <= tempHoursPerSubjectGroup[num]) { //if max number of hours for that subject for that class is not met 
@@ -62,6 +53,16 @@ void Generate(){
 void DefaultValues() {
 	 subjects = { "Maths", "English", "French","Geography","PE","I.C.T","Economics","Science","History","Art" };	//subject names
 
+	 /*			std::vector<std::string>::const_iterator itertest;
+
+			for (itertest = subjectsTakenByCurrentGroup.begin(); itertest != subjectsTakenByCurrentGroup.end(); ++itertest) {		//iterates through the subjects vector
+
+			std::string str = *itertest;
+			_RPT1(0, "The test variable is %s\n", str.c_str());  //prints to output
+
+			}
+
+	 }*/
 	 hoursSubject = {6,6,4,4,2,5,4,6,4,3};		//hours taught per subject
 
      groupNames = {"7A","7B","8A","8B"}; //class names
