@@ -28,12 +28,21 @@ void Generate(){
 			std::vector<std::string> currentTeachers;	//store the teachers who are teaching this period already
 			int Rnum = rand();
 			int num = (Rnum % subjects.size());		//get a random number between  0 and the total number of (subjects-1)  tick
-			//_RPT1(0, "The test variable is %d\n", num);
 			std::vector<std::string> subjectsTakenByCurrentGroup = subjectsTaken[groupCount]; //gets the subjects taken by the current group   tick
-			if (std::find(subjectsTakenByCurrentGroup.begin(), subjectsTakenByCurrentGroup.end(), subjects[num]) !=subjectsTakenByCurrentGroup.end()) {			//check to make sure the current subject is taken by the current group
-				std::vector<int> tempHoursPerSubjectGroup = hoursPerSubjectGroup[groupCount];
-				if (hoursSubject[num] <= tempHoursPerSubjectGroup[num]) { //if max number of hours for that subject for that class is not met 
+			if (std::find(subjectsTakenByCurrentGroup.begin(), subjectsTakenByCurrentGroup.end(), subjects[num]) != subjectsTakenByCurrentGroup.end()) {			//check to make sure the current subject is taken by the current group
+				std::vector<int> tempHoursPerSubjectGroup = hoursPerSubjectGroup[groupCount];					//create the tempHoursPerSubjectGroup tick
+				if (hoursSubject[num] > tempHoursPerSubjectGroup[num]) { //if max number of hours for that subject for that class is not met MIGHT NEED TO BE GREATER OR EQUAL TO
 					std::vector<std::string> tempTeachers = teacherNames[num];		//get all the teachers for the current subject
+					//never getting here
+
+					std::vector<std::string>::const_iterator itertest;
+					for (itertest = tempTeachers.begin(); itertest != tempTeachers.end(); ++itertest) {		//iterates through the subjects vector
+
+						std::string str = *itertest;
+						_RPT1(0, "The test variable is %s\n", str.c_str());  //prints to output
+
+					}
+
 					int num2 = (Rnum % tempTeachers.size());	// get a random number between 0 and total number of teachers for the current subject
 					std::vector<std::string>::iterator it = std::find(currentTeachers.begin(), currentTeachers.end(), tempTeachers[num2]); // returns currentTeachers.end() if the teacher is avaliable
 					while (it != currentTeachers.end()) {		//check to see if the randomly selected teacher is avaliable 
