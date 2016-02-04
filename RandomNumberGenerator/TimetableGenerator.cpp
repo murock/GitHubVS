@@ -66,36 +66,38 @@ void Generate(){
 			it = find(subjects.begin(), subjects.end(), subjectsTakenByCurrentGroup[rSubjectNum]);	//find the subject in the subjects global vector
 			int subjectNum = std::distance(subjects.begin(), it);	//return the position of the subject
 
-			std::string str = subjectsTakenByCurrentGroup[rSubjectNum];
-			_RPT1(0, "The position of the subject %s in the subjects vector is %d\n", str.c_str(), subjectNum);  //prints to output
-
 
 			std::vector<std::string> currentGroupsTeachers = attachedTeachers[groupCount];	//gets the current groups set of teachers
 
 
 			it = find(currentGroupsTeachers.begin(), currentGroupsTeachers.end(), subjects[subjectNum]);	//find the subject in the current groups teacher vector
-			int position = std::distance(subjects.begin(), it);
-			position++;		//increment to teacher position
-			_RPT0(0, "Got to here\n");  //never getting here
+			int teacherPosition = std::distance(currentGroupsTeachers.begin(), it);
+			teacherPosition++;		//increment to teacher position
 
-			str = subjects[subjectNum];
-			_RPT1(0, "The position of the subject %s in the attached teachers vector is %d\n", str.c_str(), position);  //prints to output
 
-		//	if(std::find(currentTeachers.begin(), currentTeachers.end(),))
-			std::vector<int> tempHoursPerSubjectGroup = hoursPerSubjectGroup[groupCount];					//create the tempHoursPerSubjectGroup tick
-			if (hoursSubject[subjectNum] > tempHoursPerSubjectGroup[subjectNum]) {	//if max number of hours for that subject for that class is not met MIGHT NEED TO BE GREATER OR EQUAL TO tick					
-				std::vector<std::string> tempRoomNames = roomNames[subjectNum];					//get all rooms for current subject
-				int roomNum = (Rnum % tempRoomNames.size());									//get a random number between 0 and total number of rooms for current subject
-				std::vector<std::string>::iterator checkRoom = std::find(currentRooms.begin(), currentRooms.end(), tempRoomNames[roomNum]);	//get a random room
-				while (checkRoom != currentRooms.end()) {								//stay in this loop till you find a room which is avaliable
-					int Rnum3 = rand();
-					roomNum = (Rnum3 % tempRoomNames.size());								// get a random number between 0 and total number of teachers for the current subject
-					checkRoom = std::find(currentRooms.begin(), currentRooms.end(), tempRoomNames[roomNum]);	//get another random room
+
+			if ((std::find(currentTeachers.begin(), currentTeachers.end(), currentGroupsTeachers[teacherPosition]) != currentTeachers.end())) {			//if the current teacher is busy then choose a new subject for the group for this period
+				currentTeachers.push_back(currentGroupsTeachers[teacherPosition]);								//put the current teacher into the currentteachers vector for this period
+				std::vector<int> tempHoursPerSubjectGroup = hoursPerSubjectGroup[groupCount];					//create the tempHoursPerSubjectGroup tick
+				if (hoursSubject[subjectNum] >= tempHoursPerSubjectGroup[subjectNum]) {	//if max number of hours for that subject for that class is met then choose a new subject MIGHT NEED TO BE GREATER OR EQUAL TO 
+					tempHoursPerSubjectGroup[subjectNum]++;										//increment the hour for that subject by 1
+					hoursPerSubjectGroup.at(groupCount) = tempHoursPerSubjectGroup;		//save the updated vector to the hoursPerSubjectGroup vector
+					std::vector<std::string> tempRoomNames = roomNames[subjectNum];					//get all rooms for current subject
+					int roomNum = (Rnum % tempRoomNames.size());									//get a random number between 0 and total number of rooms for current subject
+					std::vector<std::string>::iterator checkRoom = std::find(currentRooms.begin(), currentRooms.end(), tempRoomNames[roomNum]);	//get a random room
+					while (checkRoom != currentRooms.end()) {								//stay in this loop till you find a room which is avaliable
+						int Rnum3 = rand();
+						roomNum = (Rnum3 % tempRoomNames.size());								// get a random number between 0 and total number of teachers for the current subject
+						checkRoom = std::find(currentRooms.begin(), currentRooms.end(), tempRoomNames[roomNum]);	//get another random room
+					}
+					currentRooms.push_back(tempRoomNames[roomNum]);			//save the selected room to the current rooms for that period vector
+					groupCount++;											//go to the next group
 				}
+				_RPT0(0, "Max hours for subject reached choosing new sybject, removing the current teacher from vector\n");  //prints to output
+				currentTeachers.pop_back();
 			}
-
-
 		}
+		periodCount++;			//go to next period
 	}
 }
 
