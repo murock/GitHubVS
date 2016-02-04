@@ -4,4 +4,5 @@
 
 void Generate();
 void DefaultValues();
+void AttachTeachertoGroup();
 #endif

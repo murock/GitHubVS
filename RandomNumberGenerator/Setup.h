@@ -198,7 +198,9 @@ namespace TimetableGui {
 
 		_RPT0(0, "Button Pressed\n");
 			DefaultValues();
-		_RPT0(0, "Default values generated\n");
+		//_RPT0(0, "Default values generated\n");
+
+			AttachTeachertoGroup();
 			Generate();
 
 	/*		String^ temp;

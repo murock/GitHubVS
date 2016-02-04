@@ -2,7 +2,36 @@
 #include <time.h>
 #include "TimetableGenerator.h"
 
+void AttachTeachertoGroup() {
+	int groupCount = 0;
+	int subjectCount = 0;
+	srand(time(0));
 
+
+	while (groupCount < groupNames.size()) {
+		std::vector<std::string> subjectsTakenByCurrentGroup = subjectsTaken[groupCount]; //gets the subjects taken by the current group
+		std::vector<std::string> teachersForGroup;
+		while (subjectCount < subjectsTakenByCurrentGroup.size()) {
+
+			std::vector<std::string>::iterator it;
+			it = find(subjects.begin(), subjects.end(), subjectsTakenByCurrentGroup[subjectCount]);
+			int position = std::distance(subjects.begin(), it);
+
+			std::vector<std::string> tempTeachers = teacherNames[position];		//get all the teachers for the current subject tick
+			int Rnum = rand();														//generate random No
+			int teacherNum = (Rnum % tempTeachers.size());							//random number between 0 and number of teachers for current subject
+			teachersForGroup.push_back(subjectsTakenByCurrentGroup[subjectCount]);	//put the subject taken by current group into this groups vector
+			teachersForGroup.push_back(tempTeachers[teacherNum]);					//put a random teacher who teachers the subject into the teachers for this groups vector
+			std::string str = groupNames[groupCount], str2 = tempTeachers[teacherNum], str3 = subjectsTakenByCurrentGroup[subjectCount];
+			_RPT1(0, "Group %s will be taught by %s for %s\n", str.c_str(),str2.c_str(),str3.c_str());  //prints to output
+			subjectCount++;
+		}
+		subjectCount = 0;
+		attachedTeachers.push_back(teachersForGroup);				//put in all the teachers assigned to that group into the attached teachers vector
+		groupCount++;
+	}
+
+}
 
 void Generate(){
 	int groupCount = 0;
@@ -22,42 +51,55 @@ void Generate(){
 		hoursPerSubjectGroup.push_back(temp);
 	}
 
-	while (groupCount < groupNames.size()) {		// while there are still remaining groups without a timetable
-		std::vector<std::string> tempPeriods;	//stores subject periods for groups
-		while (periodCount < totalHours) {		//while there are still unallocated periods
-			std::vector<std::string> currentTeachers;	//store the teachers who are teaching this period already
-			int Rnum = rand();
-			int num = (Rnum % subjects.size());		//get a random number between  0 and the total number of (subjects-1)  tick
+	while (periodCount < totalHours) {		//while there are still unallocated periods
+		std::vector<std::string> currentTeachers;	//store the teachers who are teaching this period already
+		std::vector<std::string> currentRooms;	//store the Rooms that are in use for this period already
+		while (groupCount < groupNames.size()) {		// while there are still remaining groups without a timetable
+
+
 			std::vector<std::string> subjectsTakenByCurrentGroup = subjectsTaken[groupCount]; //gets the subjects taken by the current group   tick
-			if (std::find(subjectsTakenByCurrentGroup.begin(), subjectsTakenByCurrentGroup.end(), subjects[num]) != subjectsTakenByCurrentGroup.end()) {			//check to make sure the current subject is taken by the current group
-				std::vector<int> tempHoursPerSubjectGroup = hoursPerSubjectGroup[groupCount];					//create the tempHoursPerSubjectGroup tick
-				if (hoursSubject[num] > tempHoursPerSubjectGroup[num]) { //if max number of hours for that subject for that class is not met MIGHT NEED TO BE GREATER OR EQUAL TO
-					std::vector<std::string> tempTeachers = teacherNames[num];		//get all the teachers for the current subject
-					//never getting here
 
-					std::vector<std::string>::const_iterator itertest;
-					for (itertest = tempTeachers.begin(); itertest != tempTeachers.end(); ++itertest) {		//iterates through the subjects vector
+			int Rnum = rand();
+			int rSubjectNum = (Rnum % subjectsTakenByCurrentGroup.size());											//get a random number between  0 and the total number of (subjects-1) for that group
 
-						std::string str = *itertest;
-						_RPT1(0, "The test variable is %s\n", str.c_str());  //prints to output
+			std::vector<std::string>::iterator it;
+			it = find(subjects.begin(), subjects.end(), subjectsTakenByCurrentGroup[rSubjectNum]);	//find the subject in the subjects global vector
+			int subjectNum = std::distance(subjects.begin(), it);	//return the position of the subject
 
-					}
+			std::string str = subjectsTakenByCurrentGroup[rSubjectNum];
+			_RPT1(0, "The position of the subject %s in the subjects vector is %d\n", str.c_str(), subjectNum);  //prints to output
 
-					int num2 = (Rnum % tempTeachers.size());	// get a random number between 0 and total number of teachers for the current subject
-					std::vector<std::string>::iterator it = std::find(currentTeachers.begin(), currentTeachers.end(), tempTeachers[num2]); // returns currentTeachers.end() if the teacher is avaliable
-					while (it != currentTeachers.end()) {		//check to see if the randomly selected teacher is avaliable 
-						int Rnum2 = rand();
-						num2 = (Rnum2 % tempTeachers.size());	// get a random number between 0 and total number of teachers for the current subject
-						it = std::find(currentTeachers.begin(), currentTeachers.end(), tempTeachers[num2]);
-						periodCount = 26;
-						groupCount = 5;
-					}
+
+			std::vector<std::string> currentGroupsTeachers = attachedTeachers[groupCount];	//gets the current groups set of teachers
+
+
+			it = find(currentGroupsTeachers.begin(), currentGroupsTeachers.end(), subjects[subjectNum]);	//find the subject in the current groups teacher vector
+			int position = std::distance(subjects.begin(), it);
+			position++;		//increment to teacher position
+			_RPT0(0, "Got to here\n");  //never getting here
+
+			str = subjects[subjectNum];
+			_RPT1(0, "The position of the subject %s in the attached teachers vector is %d\n", str.c_str(), position);  //prints to output
+
+		//	if(std::find(currentTeachers.begin(), currentTeachers.end(),))
+			std::vector<int> tempHoursPerSubjectGroup = hoursPerSubjectGroup[groupCount];					//create the tempHoursPerSubjectGroup tick
+			if (hoursSubject[subjectNum] > tempHoursPerSubjectGroup[subjectNum]) {	//if max number of hours for that subject for that class is not met MIGHT NEED TO BE GREATER OR EQUAL TO tick					
+				std::vector<std::string> tempRoomNames = roomNames[subjectNum];					//get all rooms for current subject
+				int roomNum = (Rnum % tempRoomNames.size());									//get a random number between 0 and total number of rooms for current subject
+				std::vector<std::string>::iterator checkRoom = std::find(currentRooms.begin(), currentRooms.end(), tempRoomNames[roomNum]);	//get a random room
+				while (checkRoom != currentRooms.end()) {								//stay in this loop till you find a room which is avaliable
+					int Rnum3 = rand();
+					roomNum = (Rnum3 % tempRoomNames.size());								// get a random number between 0 and total number of teachers for the current subject
+					checkRoom = std::find(currentRooms.begin(), currentRooms.end(), tempRoomNames[roomNum]);	//get another random room
 				}
 			}
+
 
 		}
 	}
 }
+
+
 
 void DefaultValues() {
 	 subjects = { "Maths", "English", "French","Geography","PE","I.C.T","Economics","Science","History","Art" };	//subject names
@@ -103,7 +145,7 @@ void DefaultValues() {
 	 temp2 = { "Ec1,Ec2,Ec3" };
 	 roomNames.push_back(temp2);
 	 teacherNames.push_back(temp);
-	 temp = { "Mr Sci1","Miss Sci2", "Dr Sci" };
+	 temp = { "Mr Sci1","Miss Sci2", "Dr Sci3" };
 	 temp2 = { "S1,S2,S3" };
 	 roomNames.push_back(temp2);
 	 teacherNames.push_back(temp);
