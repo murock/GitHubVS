@@ -42,16 +42,20 @@ void Generate(){
 	std::vector<std::vector<int>> hoursPerSubjectGroup; // stores the current number of hours each group has for each subject
 
 	// fills the hoursPerSubjectGroup Vector so it is the correct size for the current timetable arrangement
-	std::vector<std::string>::const_iterator iter, iter2;
-	for (iter = groupNames.begin(); iter != groupNames.end(); ++iter) {		//iterates through the groupNames vector
+	for (std::vector<std::string>::const_iterator iter = groupNames.begin(); iter != groupNames.end(); ++iter) {		//iterates through the groupNames vector
 		std::vector<int> temp;
-		for (iter2 = subjects.begin(); iter2 != subjects.end(); ++iter2) {	//iterate through subjects vector
+		for (std::vector<std::string>::const_iterator iter2 = subjects.begin(); iter2 != subjects.end(); ++iter2) {	//iterate through subjects vector
 			temp.push_back(0);
 		}
 		hoursPerSubjectGroup.push_back(temp);
 	}
 
 	std::vector<std::vector<std::string>> periodsArray;
+
+	for (std::vector<std::string>::const_iterator iter = groupNames.begin(); iter != groupNames.end(); ++iter) {		//iterates through the groupNames vector
+		std::vector<std::string> temp;
+		periodsArray.push_back(temp);
+	}
 
 	while (periodCount < totalHours) {		//while there are still unallocated periods
 		std::vector<std::string> currentTeachers;	//store the teachers who are teaching this period already
@@ -100,12 +104,13 @@ void Generate(){
 					}
 					_RPT1(0,"Period: %d Group: %s Subject: %s Teacher: %s Room: %s\n",periodCount,groupNames[groupCount].c_str(), subjects[subjectNum].c_str(), currentGroupsTeachers[teacherPosition].c_str(), tempRoomNames[roomNum].c_str());  //prints to output
 					currentRooms.push_back(tempRoomNames[roomNum]);			//save the selected room to the current rooms for that period vector
-					std::vector<std::string> periods = periodsArray[groupCount];	//THIS IS THE ERROR LINE
+
+					std::vector<std::string> periods = periodsArray[groupCount];	//create periods vector from the periods array
 					periods.push_back(subjects[subjectNum]);		//save the subject to the periods vector
 					periods.push_back(currentGroupsTeachers[teacherPosition]);	//save the teacher to the periods vector
 					periods.push_back(tempRoomNames[roomNum]);		//save the room number to periods vector
 					Timetable tempTimetable(groupNames[groupCount], periods);									//ADD TO TIMETABLE OBJECT NEEDS EDITING
-					Timetables[groupCount];
+					Timetables[groupCount] = tempTimetable;
 					groupCount++;											//go to the next group
 
 				}
