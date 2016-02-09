@@ -51,9 +51,12 @@ void Generate(){
 		hoursPerSubjectGroup.push_back(temp);
 	}
 
+	std::vector<std::vector<std::string>> periodsArray;
+
 	while (periodCount < totalHours) {		//while there are still unallocated periods
 		std::vector<std::string> currentTeachers;	//store the teachers who are teaching this period already
 		std::vector<std::string> currentRooms;	//store the Rooms that are in use for this period already
+		groupCount = 0;
 		while (groupCount < groupNames.size()) {		// while there are still remaining groups without a timetable
 
 
@@ -74,24 +77,37 @@ void Generate(){
 			int teacherPosition = std::distance(currentGroupsTeachers.begin(), it);
 			teacherPosition++;		//increment to teacher position
 
+			std::string str = currentGroupsTeachers[teacherPosition];
+			_RPT1(0, "The current teacher selected is %s\n",str.c_str());  //prints to output
 
 
-			if ((std::find(currentTeachers.begin(), currentTeachers.end(), currentGroupsTeachers[teacherPosition]) != currentTeachers.end())) {			//if the current teacher is busy then choose a new subject for the group for this period
+			if (std::find(currentTeachers.begin(), currentTeachers.end(), currentGroupsTeachers[teacherPosition]) == currentTeachers.end()) {			//if the current teacher is busy then choose a new subject for the group for this period
 				currentTeachers.push_back(currentGroupsTeachers[teacherPosition]);								//put the current teacher into the currentteachers vector for this period
 				std::vector<int> tempHoursPerSubjectGroup = hoursPerSubjectGroup[groupCount];					//create the tempHoursPerSubjectGroup tick
-				if (hoursSubject[subjectNum] >= tempHoursPerSubjectGroup[subjectNum]) {	//if max number of hours for that subject for that class is met then choose a new subject MIGHT NEED TO BE GREATER OR EQUAL TO 
+
+				if (hoursSubject[subjectNum] >= tempHoursPerSubjectGroup[subjectNum]) {	//if max number of hours for that subject for that class is met then choose a new subject MIGHT NEED TO BE GREATER OR EQUAL TO	--- will get stuck in here once all subjects have got all hour required
 					tempHoursPerSubjectGroup[subjectNum]++;										//increment the hour for that subject by 1
 					hoursPerSubjectGroup.at(groupCount) = tempHoursPerSubjectGroup;		//save the updated vector to the hoursPerSubjectGroup vector
 					std::vector<std::string> tempRoomNames = roomNames[subjectNum];					//get all rooms for current subject
+
 					int roomNum = (Rnum % tempRoomNames.size());									//get a random number between 0 and total number of rooms for current subject
 					std::vector<std::string>::iterator checkRoom = std::find(currentRooms.begin(), currentRooms.end(), tempRoomNames[roomNum]);	//get a random room
+
 					while (checkRoom != currentRooms.end()) {								//stay in this loop till you find a room which is avaliable
 						int Rnum3 = rand();
 						roomNum = (Rnum3 % tempRoomNames.size());								// get a random number between 0 and total number of teachers for the current subject
 						checkRoom = std::find(currentRooms.begin(), currentRooms.end(), tempRoomNames[roomNum]);	//get another random room
 					}
+					_RPT1(0,"Period: %d Group: %s Subject: %s Teacher: %s Room: %s\n",periodCount,groupNames[groupCount].c_str(), subjects[subjectNum].c_str(), currentGroupsTeachers[teacherPosition].c_str(), tempRoomNames[roomNum].c_str());  //prints to output
 					currentRooms.push_back(tempRoomNames[roomNum]);			//save the selected room to the current rooms for that period vector
+					std::vector<std::string> periods = periodsArray[groupCount];	//THIS IS THE ERROR LINE
+					periods.push_back(subjects[subjectNum]);		//save the subject to the periods vector
+					periods.push_back(currentGroupsTeachers[teacherPosition]);	//save the teacher to the periods vector
+					periods.push_back(tempRoomNames[roomNum]);		//save the room number to periods vector
+					Timetable tempTimetable(groupNames[groupCount], periods);									//ADD TO TIMETABLE OBJECT NEEDS EDITING
+					Timetables[groupCount];
 					groupCount++;											//go to the next group
+
 				}
 				_RPT0(0, "Max hours for subject reached choosing new sybject, removing the current teacher from vector\n");  //prints to output
 				currentTeachers.pop_back();

@@ -12,7 +12,7 @@ class Timetable {
 public:
 	Timetable();		// Default Constructor
 
-	Timetable(std::string, std::vector<std::string>,std::vector<std::string>);	//Overload Constructor
+	Timetable(std::string, std::vector<std::string>);	//Overload Constructor
 
 	~Timetable();		//Destructor
 
@@ -20,7 +20,6 @@ public:
 private:		//can't be accessed by outside files, can't be changed elsewhere
 	std::string newGroup;
 	std::vector<std::string> newPeriods;
-	std::vector<std::string> newSubjectTeachers;
 };
 
 #endif
