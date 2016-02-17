@@ -16,6 +16,11 @@ public:
 
 	~Timetable();		//Destructor
 
+	std::string getGroup() const;
+	std::vector<std::string> getPeriods() const;
+
+
+
 
 private:		//can't be accessed by outside files, can't be changed elsewhere
 	std::string newGroup;

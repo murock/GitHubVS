@@ -202,6 +202,7 @@ namespace TimetableGui {
 
 			AttachTeachertoGroup();
 			Generate();
+			checkTimetable();
 
 	/*		String^ temp;
 			temp = System::Convert::ToString(AnswerBox->Text);	//gets the text from the answer box and saves it to temp

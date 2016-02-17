@@ -12,3 +12,11 @@ Timetable::Timetable(std::string group, std::vector<std::string> periods) {
 Timetable::~Timetable() {
 
 }
+
+std::string Timetable::getGroup() const {
+	return newGroup;
+}
+
+std::vector<std::string> Timetable::getPeriods() const {
+	return newPeriods;
+}

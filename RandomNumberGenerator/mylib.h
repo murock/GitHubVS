@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <algorithm>
 #include <string>
 #include <sstream>
 #include <msclr/marshal_cppstd.h>

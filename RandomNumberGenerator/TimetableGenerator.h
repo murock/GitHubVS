@@ -5,4 +5,5 @@
 void Generate();
 void DefaultValues();
 void AttachTeachertoGroup();
+void checkTimetable();
 #endif
