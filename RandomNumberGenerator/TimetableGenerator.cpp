@@ -46,9 +46,9 @@ std::vector<std::string> AssignTimetable(int periodCount,std::vector<std::vector
 }
 
 
-bool checkMaxHoursReached(std::vector<int> hoursSubject) {
+/*bool checkMaxHoursReached(std::vector<int> hoursSubject) {
 
-}
+}*/
 
 void Generate(){
 	int groupCount = 0;
@@ -98,9 +98,10 @@ void Generate(){
 		std::vector<std::string> currentRooms;	//store the Rooms that are in use for this period already
 		groupCount = 0;
 
+
 		int iterationCount = 0;			//counts the number of times the randomely selected subject max hours were reached
 		while (groupCount < groupNames.size()) {		// while there are still remaining groups without a timetable
-
+			int freePeriodFlag = 0;			//indicates weather the current period for the group is a free or not
 
 			std::vector<std::string> subjectsTakenByCurrentGroup = subjectsTaken[groupCount]; //gets the subjects taken by the current group   
 
@@ -134,7 +135,20 @@ void Generate(){
 				std::vector<std::string>::iterator checkRoom = std::find(currentRooms.begin(), currentRooms.end(), tempRoomNames[roomNum]);	//get a random room
 
 
-				while (checkRoom != currentRooms.end()) {								//stay in this loop till you find a room which is avaliable
+
+				
+				//if current rooms has all rooms for subject then assign a free period
+				int duplicateRoomCount = 0;
+				for (std::vector<std::string>::const_iterator iter = tempRoomNames.begin(); iter != tempRoomNames.end(); ++iter) {		//iterates through the  rooms names for that subject
+					if (std::find(currentRooms.begin(), currentRooms.end(), *iter) != currentRooms.end()) 							//check if the room is in the currentRooms vector
+						duplicateRoomCount++;
+					if (duplicateRoomCount == tempRoomNames.size()) {
+						_RPT0(0, "All rooms in use for that subject, assigning free period\n");  //prints to output
+						freePeriodFlag = 1;
+					}
+				}
+
+				while ((checkRoom != currentRooms.end()) && (freePeriodFlag == 0)) {								//stay in this loop till you find a room which is avaliable, or if free then ignore this loop
 					int Rnum3 = rand();
 					roomNum = (Rnum3 % tempRoomNames.size());								// get a random number between 0 and total number of teachers for the current subject
 					checkRoom = std::find(currentRooms.begin(), currentRooms.end(), tempRoomNames[roomNum]);	//get another random room
@@ -147,7 +161,7 @@ void Generate(){
 		//		int hoursCurrentSubject = currentGroupsSubjectHours[rSubjectNum];			//get the current hours taken for that subject 
 
 
-				if (hoursSubject[subjectNum] > tempHoursPerSubjectGroup[subjectNum]) {	//if max number of hours for that subject for that class is met then choose a new subject. Or if subjects for that class exhausted then give them a free period
+				if ((hoursSubject[subjectNum] > tempHoursPerSubjectGroup[subjectNum]) && (freePeriodFlag == 0)) {	//if max number of hours for that subject for that class is met then choose a new subject. Or if subjects for that class exhausted then give them a free period
 					iterationCount = 0;
 					tempHoursPerSubjectGroup[subjectNum]++;										//increment the hour for that subject by 1
 					hoursPerSubjectGroup.at(groupCount) = tempHoursPerSubjectGroup;		//save the updated vector to the hoursPerSubjectGroup vector
@@ -163,7 +177,7 @@ void Generate(){
 					groupCount++;			//go to the next group
 
 				}
-				else if (iterationCount > 50) {				//WOULD BE BETTER IF THIS CHECKED IF ALL SUBJECT HOURS WERE EXHAUSTED
+				else if ((iterationCount > 50)||(freePeriodFlag == 1)) {				//WOULD BE BETTER IF THIS CHECKED IF ALL SUBJECT HOURS WERE EXHAUSTED, assign free period
 					subjectNum = 10;		//make the subjectNum point to "Free"
 					currentRooms.push_back(tempRoomNames[roomNum]);			//save the selected room to the current rooms for that period vector
 					periodsArray[groupCount] = AssignTimetable(periodCount,periodsArray, groupCount, subjectNum, currentGroupsTeachers, teacherPosition, tempRoomNames, roomNum);	//assign the timetable to the global timetable variable and save the periodsArray in its current state
@@ -172,7 +186,6 @@ void Generate(){
 
 				}
 				else {
-					//_RPT1(0, "Iteration Count is %d\n", iterationCount);  //prints to output
 					iterationCount++;
 					currentTeachers.pop_back();
 				}
@@ -337,7 +350,7 @@ void DefaultValues() {
 	 roomNames.push_back(temp2);
 	 teacherNames.push_back(temp);
 	 temp = { "Mr English1","Miss English2", "Dr English3" };
-	 temp2 = {"E1","E2","E3"};
+	 temp2 = { "E1","E2","E3" };
 	 roomNames.push_back(temp2);
 	 teacherNames.push_back(temp);
 	 temp = { "Mr French1","Miss French2", "Dr French3" };
