@@ -46,9 +46,27 @@ std::vector<std::string> AssignTimetable(int periodCount,std::vector<std::vector
 }
 
 
-/*bool checkMaxHoursReached(std::vector<int> hoursSubject) {
+bool checkMaxHoursReached(std::vector<int> tempHoursPerSubjectGroup, int groupCount) {	//check if the max hours have been reached for every subject for this group
 
-}*/
+	std::vector<std::string> subjectsTakenByGroup = subjectsTaken[groupCount];	//get the subjects taken by the group
+
+	int maxHoursReached = 0;		//counts how many subjects have the max hours reached
+
+	for (std::vector<std::string>::const_iterator iter = subjectsTakenByGroup.begin(); iter != subjectsTakenByGroup.end(); ++iter) {		//iterates through the subjects taken by the group
+		std::vector<std::string>::iterator it;
+		it = find(subjects.begin(), subjects.end(), *iter);	//find the subject in the subjects global vector
+		int subjectNum = std::distance(subjects.begin(), it);	//return the position of the subject
+		if (hoursSubject[subjectNum] == tempHoursPerSubjectGroup[subjectNum]) 		//check if max hours are reached for this subject
+			maxHoursReached++;
+		
+
+	}
+	if (maxHoursReached == subjectsTakenByGroup.size())				//if the max hours for all subjects is reached
+		return 1;
+	else
+		return 0;
+
+}
 
 void Generate(){
 	int groupCount = 0;
@@ -136,7 +154,7 @@ void Generate(){
 
 
 
-				
+
 				//if current rooms has all rooms for subject then assign a free period
 				int duplicateRoomCount = 0;
 				for (std::vector<std::string>::const_iterator iter = tempRoomNames.begin(); iter != tempRoomNames.end(); ++iter) {		//iterates through the  rooms names for that subject
@@ -159,17 +177,24 @@ void Generate(){
 				//end room selection
 		//		std::vector<int> currentGroupsSubjectHours = subjectHoursCheck[groupCount];		//get the current hours taken for each subject for the current group
 		//		int hoursCurrentSubject = currentGroupsSubjectHours[rSubjectNum];			//get the current hours taken for that subject 
+				_RPT0(0, "1\n");  //prints to output
+				if (checkMaxHoursReached(tempHoursPerSubjectGroup, groupCount)) {
+					_RPT0(0, "setting flag\n");  //prints to output
+					freePeriodFlag = 1;
+				}
+				_RPT1(0, "free period flag is %d hoursSubject is %d temp hours is %d\n", freePeriodFlag, hoursSubject[subjectNum],tempHoursPerSubjectGroup[subjectNum]);  //prints to output
 
+				
 
 				if ((hoursSubject[subjectNum] > tempHoursPerSubjectGroup[subjectNum]) && (freePeriodFlag == 0)) {	//if max number of hours for that subject for that class is met then choose a new subject. Or if subjects for that class exhausted then give them a free period
 					iterationCount = 0;
 					tempHoursPerSubjectGroup[subjectNum]++;										//increment the hour for that subject by 1
 					hoursPerSubjectGroup.at(groupCount) = tempHoursPerSubjectGroup;		//save the updated vector to the hoursPerSubjectGroup vector
 
-										
 
 
-				
+
+
 
 					currentRooms.push_back(tempRoomNames[roomNum]);			//save the selected room to the current rooms for that period vector
 					periodsArray[groupCount] = AssignTimetable(periodCount, periodsArray, groupCount, subjectNum, currentGroupsTeachers, teacherPosition, tempRoomNames, roomNum);		//assign the timetable to the global timetable variable and save the periodsArray in its current state
@@ -177,7 +202,7 @@ void Generate(){
 					groupCount++;			//go to the next group
 
 				}
-				else if ((iterationCount > 50)||(freePeriodFlag == 1)) {				//WOULD BE BETTER IF THIS CHECKED IF ALL SUBJECT HOURS WERE EXHAUSTED, assign free period
+				else if (freePeriodFlag == 1) {				//WOULD BE BETTER IF THIS CHECKED IF ALL SUBJECT HOURS WERE EXHAUSTED, assign free period
 					subjectNum = 10;		//make the subjectNum point to "Free"
 					currentRooms.push_back(tempRoomNames[roomNum]);			//save the selected room to the current rooms for that period vector
 					periodsArray[groupCount] = AssignTimetable(periodCount,periodsArray, groupCount, subjectNum, currentGroupsTeachers, teacherPosition, tempRoomNames, roomNum);	//assign the timetable to the global timetable variable and save the periodsArray in its current state
@@ -325,6 +350,8 @@ void checkTimetable() {			//check all hours scheduled not too little or too many
 
 	if (feasible == 0)
 		_RPT0(0, "Timetable is feasible\n");  //prints to output
+	else
+		_RPT0(0, "Timetable is infeasible\n");  //prints to output
 }
 
 void DefaultValues() {
