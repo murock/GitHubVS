@@ -46,7 +46,7 @@ std::vector<std::string> AssignTimetable(int periodCount,std::vector<std::vector
 }
 
 
-bool checkMaxHoursReached(std::vector<int> tempHoursPerSubjectGroup, int groupCount) {	//check if the max hours have been reached for every subject for this group
+bool checkMaxHoursReached(std::vector<int> tempHoursPerSubjectGroup, int groupCount, std::vector<std::string> currentTeachers) {	//check if the max hours have been reached for every subject for this group
 
 	std::vector<std::string> subjectsTakenByGroup = subjectsTaken[groupCount];	//get the subjects taken by the group
 
@@ -56,8 +56,21 @@ bool checkMaxHoursReached(std::vector<int> tempHoursPerSubjectGroup, int groupCo
 		std::vector<std::string>::iterator it;
 		it = find(subjects.begin(), subjects.end(), *iter);	//find the subject in the subjects global vector
 		int subjectNum = std::distance(subjects.begin(), it);	//return the position of the subject
+
+		std::vector<std::string> currentGroupsTeachers = attachedTeachers[groupCount];	//gets the current groups set of teachers
+
+		it = find(currentGroupsTeachers.begin(), currentGroupsTeachers.end(), subjects[subjectNum]);	//find the subject in the current groups teacher vector
+		int teacherPosition = std::distance(currentGroupsTeachers.begin(), it);
+		teacherPosition++;		//increment to teacher position
+
+
 		if (hoursSubject[subjectNum] == tempHoursPerSubjectGroup[subjectNum]) 		//check if max hours are reached for this subject
 			maxHoursReached++;
+		else if (std::find(currentTeachers.begin(), currentTeachers.end(), currentGroupsTeachers[teacherPosition]) != currentTeachers.end()) {	//check if teacher is busy for that period
+		//	_RPT0(0, "Teacher busy for that period\n");  //prints to output
+			maxHoursReached++;
+		}
+
 		
 
 	}
@@ -138,7 +151,6 @@ void Generate(){
 			int teacherPosition = std::distance(currentGroupsTeachers.begin(), it);
 			teacherPosition++;		//increment to teacher position
 
-			std::string str = currentGroupsTeachers[teacherPosition];
 
 
 
@@ -170,19 +182,18 @@ void Generate(){
 					int Rnum3 = rand();
 					roomNum = (Rnum3 % tempRoomNames.size());								// get a random number between 0 and total number of teachers for the current subject
 					checkRoom = std::find(currentRooms.begin(), currentRooms.end(), tempRoomNames[roomNum]);	//get another random room
-					std::string str = tempRoomNames[roomNum];
 				}
 
 
 				//end room selection
 		//		std::vector<int> currentGroupsSubjectHours = subjectHoursCheck[groupCount];		//get the current hours taken for each subject for the current group
 		//		int hoursCurrentSubject = currentGroupsSubjectHours[rSubjectNum];			//get the current hours taken for that subject 
-				_RPT0(0, "1\n");  //prints to output
-				if (checkMaxHoursReached(tempHoursPerSubjectGroup, groupCount)) {
-					_RPT0(0, "setting flag\n");  //prints to output
+			//	_RPT0(0, "1\n");  //prints to output
+				if (checkMaxHoursReached(tempHoursPerSubjectGroup, groupCount, currentTeachers)) {
+					//_RPT0(0, "setting flag\n");  //prints to output
 					freePeriodFlag = 1;
 				}
-				_RPT1(0, "free period flag is %d hoursSubject is %d temp hours is %d\n", freePeriodFlag, hoursSubject[subjectNum],tempHoursPerSubjectGroup[subjectNum]);  //prints to output
+				//_RPT1(0, "free period flag is %d hoursSubject is %d temp hours is %d the subject is %s \n", freePeriodFlag, hoursSubject[subjectNum],tempHoursPerSubjectGroup[subjectNum], subjects[subjectNum].c_str());  //prints to output
 
 				
 
