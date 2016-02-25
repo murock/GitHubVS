@@ -143,6 +143,7 @@
     <ClCompile Include="TeacherSetup.cpp" />
     <ClCompile Include="Timetable.cpp" />
     <ClCompile Include="TimetableGenerator.cpp" />
+    <ClCompile Include="TimetableViewer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyForm.h">
@@ -157,6 +158,9 @@
     </ClInclude>
     <ClInclude Include="Timetable.h" />
     <ClInclude Include="TimetableGenerator.h" />
+    <ClInclude Include="TimetableViewer.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MyForm.resx">
@@ -164,6 +168,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Setup.resx">
       <DependentUpon>Setup.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimetableViewer.resx">
+      <DependentUpon>TimetableViewer.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

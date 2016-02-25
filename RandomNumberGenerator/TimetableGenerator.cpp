@@ -50,8 +50,6 @@ int checkMaxHoursReached(std::vector<int> tempHoursPerSubjectGroup, int groupCou
 
 	std::vector<std::string> subjectsTakenByGroup = subjectsTaken[groupCount];	//get the subjects taken by the group
 
-	int maxHoursReached = 0;		//counts how many subjects have the max hours reached
-	int teacherBusy = 0;			//counts how many of the groups teachers are busy
 
 	for (std::vector<std::string>::const_iterator iter = subjectsTakenByGroup.begin(); iter != subjectsTakenByGroup.end(); ++iter) {		//iterates through the subjects taken by the group
 		std::vector<std::string>::iterator it;
@@ -70,7 +68,7 @@ int checkMaxHoursReached(std::vector<int> tempHoursPerSubjectGroup, int groupCou
 			return subjectNum;
 		}
 	}
-		return 10;
+		return subjects.size()+1;
 
 
 }
@@ -180,18 +178,15 @@ void Generate(){
 
 
 				//end room selection
-		//		std::vector<int> currentGroupsSubjectHours = subjectHoursCheck[groupCount];		//get the current hours taken for each subject for the current group
-		//		int hoursCurrentSubject = currentGroupsSubjectHours[rSubjectNum];			//get the current hours taken for that subject 
-			//	_RPT0(0, "1\n");  //prints to output
+
 				int testTimetable = checkMaxHoursReached(tempHoursPerSubjectGroup, groupCount, currentTeachers, subjectNum);
-				if (testTimetable == 10) {
+				if (testTimetable == (subjects.size()+1)) {
 					freePeriodFlag = 1;
 				}
 				else {
 					subjectNum = testTimetable;
 				}
-				//_RPT1(0, "free period flag is %d hoursSubject is %d temp hours is %d the subject is %s \n", freePeriodFlag, hoursSubject[subjectNum],tempHoursPerSubjectGroup[subjectNum], subjects[subjectNum].c_str());  //prints to output
-
+				
 				
 
 				if ((hoursSubject[subjectNum] > tempHoursPerSubjectGroup[subjectNum]) && (freePeriodFlag == 0)) {	//if max number of hours for that subject for that class is met then choose a new subject. Or if subjects for that class exhausted then give them a free period
@@ -330,7 +325,7 @@ void checkTimetable() {			//check all hours scheduled not too little or too many
 		periodCount++;
 	}
 
-;
+
 
 	for (int i = 0; i < groupNames.size(); i++) {		//iterates through the groups vector
 		_RPT1(0, "The current group is %d\n", i);  //prints to output
@@ -360,6 +355,62 @@ void checkTimetable() {			//check all hours scheduled not too little or too many
 		_RPT0(0, "Timetable is feasible\n");  //prints to output
 	else
 		_RPT0(0, "Timetable is infeasible\n");  //prints to output
+}
+
+
+void ScoreTimetable() {		//lower score is better
+/*	Two subsequent classes of the same subject should be minimised
+		Teacher preference on which periods / days they want to teach
+		Physically active lessons should not be scheduled after lunch
+		Avoid empty timeslots between classes
+		If possible have free periods be put on the final day of the week*/
+	int totalHours = 25;		//total hours in the timetable
+	int lunchPeriod = 4;		//the period after lunch
+
+	int teacherPreference = 0;	//if 0 then pref morning if 1 then pref afternoon
+
+	for (std::vector<Timetable>::const_iterator iter = Timetables.begin(); iter != Timetables.end(); ++iter) {			//iterate through Timetables vector
+		Timetable currentTimetable = *iter;	//select the current timetable
+
+		std::vector<std::string> periods = currentTimetable.getPeriods();	//get the period information for that group
+
+		int currentScore = 0;
+		std::string lastPeriod = "set-up";
+		int hoursPerDay = totalHours / 5;
+		int periodDayCount = 1;
+		for (int periodCount = 0; periodCount < totalHours; periodCount++) {		//iterate through each period
+
+
+			std::string currentTeacher = periods[(periodCount * 3 + 1)];		//get current teacher for that period
+			std::string currentRoom = periods[(periodCount * 3 + 2)];		//get current room for that period
+			std::string subject = periods[periodCount * 3];			//get current subject
+
+			std::string nextPeriod = periods[(periodCount * 3) + 3]
+
+
+			if (periodDayCount == hoursPerDay)
+				periodDayCount = 1;
+			//check Two subsequent classes
+			if (lastPeriod == subject)
+				currentScore++;			//increase score if subsequent class
+			//check physically active lesson after lunch
+			if ((subject == "PE") && (periodDayCount == lunchPeriod))
+				currentScore++;		//increase score if PE after lunch
+			//check for empty timeslot between class
+			if (periodDayCount != 1 || hoursPerDay)		//check not first or last period in the day
+				if (subject == "Free")	//check if current subject is free
+					if ((lastPeriod != "Free") && (nextPeriod != "Free")) //if both periods before and after the free are subjects then increase score
+						currentScore++;
+			//check free periods be put on the final day of the week
+			if (periodCount == (totalHours - hoursPerDay))	//if on final day of the week
+				if (subject != "Free")			//if not a free period increase score
+					currentScore++;
+			//Teacher preference 
+			lastPeriod = subject;
+			periodDayCount++;
+		}
+	}
+
 }
 
 void DefaultValues() {
