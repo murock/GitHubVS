@@ -357,13 +357,13 @@ void checkTimetable() {			//check all hours scheduled not too little or too many
 		_RPT0(0, "Timetable is infeasible\n");  //prints to output
 }
 
-
+/*
 void ScoreTimetable() {		//lower score is better
 /*	Two subsequent classes of the same subject should be minimised
 		Teacher preference on which periods / days they want to teach
 		Physically active lessons should not be scheduled after lunch
 		Avoid empty timeslots between classes
-		If possible have free periods be put on the final day of the week*/
+		If possible have free periods be put on the final day of the week
 	int totalHours = 25;		//total hours in the timetable
 	int lunchPeriod = 4;		//the period after lunch
 
@@ -411,7 +411,7 @@ void ScoreTimetable() {		//lower score is better
 		}
 	}
 
-}
+}*/
 
 void DefaultValues() {
 	 subjects = { "Maths", "English", "French","Geography","PE","I.C.T","Economics","Science","History","Art","Free" };	//subject names

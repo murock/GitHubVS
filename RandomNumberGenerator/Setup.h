@@ -204,7 +204,8 @@ namespace TimetableGui {
 			Generate();
 			checkTimetable();
 
-	/*		String^ temp;
+			/*
+			String^ temp;
 			temp = System::Convert::ToString(AnswerBox->Text);	//gets the text from the answer box and saves it to temp
 
 			std::string converted_temp = msclr::interop::marshal_as< std::string >(temp); // converts from a String^ to a std::string
