@@ -203,6 +203,7 @@ namespace TimetableGui {
 			AttachTeachertoGroup();
 			Generate();
 			checkTimetable();
+		//	ScoreTimetable();
 
 			/*
 			String^ temp;

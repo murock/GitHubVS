@@ -6,4 +6,5 @@ void Generate();
 void DefaultValues();
 void AttachTeachertoGroup();
 void checkTimetable();
+void ScoreTimetable();
 #endif

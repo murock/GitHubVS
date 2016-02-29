@@ -205,9 +205,13 @@ void Generate(){
 					groupCount++;			//go to the next group
 
 				}
-				else if (freePeriodFlag == 1) {				//WOULD BE BETTER IF THIS CHECKED IF ALL SUBJECT HOURS WERE EXHAUSTED, assign free period
+				else if (freePeriodFlag == 1) {				// assign free period
 					subjectNum = 10;		//make the subjectNum point to "Free"
 					currentRooms.push_back(tempRoomNames[roomNum]);			//save the selected room to the current rooms for that period vector
+					currentTeachers.pop_back();
+					currentRooms.pop_back();
+					tempRoomNames[roomNum] = "FreeRoom";
+					currentGroupsTeachers[teacherPosition] = "FreeTeacher";
 					periodsArray[groupCount] = AssignTimetable(periodCount,periodsArray, groupCount, subjectNum, currentGroupsTeachers, teacherPosition, tempRoomNames, roomNum);	//assign the timetable to the global timetable variable and save the periodsArray in its current state
 
 					groupCount++;			//go to the next group
@@ -262,16 +266,17 @@ void checkTimetable() {			//check all hours scheduled not too little or too many
 			std::vector<std::string> periods = currentTimetable.getPeriods();	//get the period information for that group
 		
 			std::string currentTeacher = periods[(periodCount * 3 + 1)];		//get current teacher for that period
-			currentTeachers.push_back(currentTeacher);
+
 		
 			std::string currentRoom = periods[(periodCount * 3 + 2)];		//get current room for that period
-			currentRooms.push_back(currentRoom);
+
 		
 			std::string subject = periods[periodCount * 3];			//get current subject
 
 			std::string freeCheck = "Free";
 			if (subject != freeCheck)  {		// if its not a free period then check the subject hours 
-
+				currentTeachers.push_back(currentTeacher);
+				currentRooms.push_back(currentRoom);
 
 				std::vector<std::string> currentGroupsSubjects = subjectsTaken[groupCount];
 				std::vector<std::string>::iterator it;
@@ -357,22 +362,26 @@ void checkTimetable() {			//check all hours scheduled not too little or too many
 		_RPT0(0, "Timetable is infeasible\n");  //prints to output
 }
 
-/*
+
 void ScoreTimetable() {		//lower score is better
 /*	Two subsequent classes of the same subject should be minimised
 		Teacher preference on which periods / days they want to teach
 		Physically active lessons should not be scheduled after lunch
 		Avoid empty timeslots between classes
-		If possible have free periods be put on the final day of the week
+		If possible have free periods be put on the final day of the week */
 	int totalHours = 25;		//total hours in the timetable
 	int lunchPeriod = 4;		//the period after lunch
 
 	int teacherPreference = 0;	//if 0 then pref morning if 1 then pref afternoon
-
+	int totalScore = 0;
 	for (std::vector<Timetable>::const_iterator iter = Timetables.begin(); iter != Timetables.end(); ++iter) {			//iterate through Timetables vector
 		Timetable currentTimetable = *iter;	//select the current timetable
 
 		std::vector<std::string> periods = currentTimetable.getPeriods();	//get the period information for that group
+
+
+		
+
 
 		int currentScore = 0;
 		std::string lastPeriod = "set-up";
@@ -385,33 +394,43 @@ void ScoreTimetable() {		//lower score is better
 			std::string currentRoom = periods[(periodCount * 3 + 2)];		//get current room for that period
 			std::string subject = periods[periodCount * 3];			//get current subject
 
-			std::string nextPeriod = periods[(periodCount * 3) + 3]
+			std::string nextPeriod = periods[(periodCount * 3) + 3];
 
 
 			if (periodDayCount == hoursPerDay)
 				periodDayCount = 1;
 			//check Two subsequent classes
-			if (lastPeriod == subject)
+			if (lastPeriod == subject) {
 				currentScore++;			//increase score if subsequent class
+				_RPT0(0, "Increasing score subsequent class \n");  //prints to output
+			}
 			//check physically active lesson after lunch
-			if ((subject == "PE") && (periodDayCount == lunchPeriod))
+			if ((subject == "PE") && (periodDayCount == lunchPeriod)){
 				currentScore++;		//increase score if PE after lunch
+			_RPT0(0, "Increasing score PE after lunch \n");  //prints to output
+		}
 			//check for empty timeslot between class
-			if (periodDayCount != 1 || hoursPerDay)		//check not first or last period in the day
+			if (periodDayCount != 1 || hoursPerDay){		//check not first or last period in the day
 				if (subject == "Free")	//check if current subject is free
 					if ((lastPeriod != "Free") && (nextPeriod != "Free")) //if both periods before and after the free are subjects then increase score
 						currentScore++;
+			_RPT0(0, "Increasing score free inbetween subjects \n");  //prints to output
+	}
 			//check free periods be put on the final day of the week
-			if (periodCount == (totalHours - hoursPerDay))	//if on final day of the week
+			if (periodCount == (totalHours - hoursPerDay)){	//if on final day of the week
 				if (subject != "Free")			//if not a free period increase score
 					currentScore++;
+			_RPT0(0, "Increasing score not a free on friday \n");  //prints to output
+}
 			//Teacher preference 
 			lastPeriod = subject;
 			periodDayCount++;
 		}
+		_RPT1(0, "The current score is %d\n", currentScore);  //prints to output
+		totalScore = totalScore + currentScore;	//add the current score to the total for the timetable
 	}
-
-}*/
+	_RPT1(0, "The TOTAL score is %d\n", totalScore);  //prints to output
+}
 
 void DefaultValues() {
 	 subjects = { "Maths", "English", "French","Geography","PE","I.C.T","Economics","Science","History","Art","Free" };	//subject names

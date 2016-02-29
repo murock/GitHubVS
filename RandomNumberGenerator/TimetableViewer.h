@@ -37,12 +37,39 @@ namespace RandomNumberGenerator {
 	private: System::Windows::Forms::Label^  label1;
 	protected:
 	private: System::Windows::Forms::TextBox^  textBox1;
+	private: System::Windows::Forms::TableLayoutPanel^  tableLayoutPanel1;
 
 	private:
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
 		System::ComponentModel::Container ^components;
+		array<System::Windows::Forms::Label^>  ^LabelArr;
+
+
+
+		void InitializeComponent1(void)
+		{
+
+			this->LabelArr = gcnew array<System::Windows::Forms::Label^>(3);
+			this->LabelArr[0] = (gcnew System::Windows::Forms::Label());
+			this->LabelArr[1] = (gcnew System::Windows::Forms::Label());
+			this->LabelArr[2] = (gcnew System::Windows::Forms::Label());
+
+			this->tableLayoutPanel1->Controls->Add(this->LabelArr[0], 0, 0);
+			// 
+			// LabelArr 
+			// 
+			this->LabelArr[0]->AutoSize = true;
+			this->LabelArr[0]->Location = System::Drawing::Point(3, 0);
+			this->LabelArr[0]->Name = L"label1";
+			this->LabelArr[0]->Size = System::Drawing::Size(35, 13);
+			this->LabelArr[0]->TabIndex = 0;
+			this->LabelArr[0]->Text = L"label1";
+
+		}
+		
+
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -53,6 +80,7 @@ namespace RandomNumberGenerator {
 		{
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->tableLayoutPanel1 = (gcnew System::Windows::Forms::TableLayoutPanel());
 			this->SuspendLayout();
 			// 
 			// label1
@@ -71,11 +99,30 @@ namespace RandomNumberGenerator {
 			this->textBox1->Size = System::Drawing::Size(136, 20);
 			this->textBox1->TabIndex = 1;
 			// 
+			// tableLayoutPanel1
+			// 
+			this->tableLayoutPanel1->ColumnCount = 3;
+			this->tableLayoutPanel1->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+				50)));
+			this->tableLayoutPanel1->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+				50)));
+			this->tableLayoutPanel1->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+				86)));
+			this->tableLayoutPanel1->Location = System::Drawing::Point(184, 198);
+			this->tableLayoutPanel1->Name = L"tableLayoutPanel1";
+			this->tableLayoutPanel1->RowCount = 3;
+			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 50)));
+			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 50)));
+			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 51)));
+			this->tableLayoutPanel1->Size = System::Drawing::Size(272, 152);
+			this->tableLayoutPanel1->TabIndex = 2;
+			// 
 			// TimetableViewer
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1020, 788);
+			this->Controls->Add(this->tableLayoutPanel1);
 			this->Controls->Add(this->textBox1);
 			this->Controls->Add(this->label1);
 			this->Name = L"TimetableViewer";
