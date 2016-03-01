@@ -1,5 +1,6 @@
 #include "MyForm.h"
 #include "Setup.h"
+#include "TimetableViewer.h"
 
 using namespace System;
 using namespace System::Windows::Forms;

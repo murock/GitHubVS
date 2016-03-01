@@ -1,6 +1,7 @@
 #pragma once
 #include "mylib.h"
 #include "TimetableGenerator.h"
+#include "TimetableViewer.h"
 
 
 namespace TimetableGui {
@@ -47,6 +48,7 @@ namespace TimetableGui {
 	private: System::Windows::Forms::Button^  enterTeachersButton;
 	private: System::Windows::Forms::Button^  enterRoomsButton;
 	private: System::Windows::Forms::Button^  enterSubjectsButton;
+	private: System::Windows::Forms::Button^  defaultButton;
 
 
 	protected:
@@ -73,6 +75,7 @@ namespace TimetableGui {
 			this->enterTeachersButton = (gcnew System::Windows::Forms::Button());
 			this->enterRoomsButton = (gcnew System::Windows::Forms::Button());
 			this->enterSubjectsButton = (gcnew System::Windows::Forms::Button());
+			this->defaultButton = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// NextButton
@@ -165,11 +168,22 @@ namespace TimetableGui {
 			this->enterSubjectsButton->Visible = false;
 			this->enterSubjectsButton->Click += gcnew System::EventHandler(this, &Setup::enterSubjectsButton_Click);
 			// 
+			// defaultButton
+			// 
+			this->defaultButton->Location = System::Drawing::Point(169, 93);
+			this->defaultButton->Name = L"defaultButton";
+			this->defaultButton->Size = System::Drawing::Size(140, 27);
+			this->defaultButton->TabIndex = 9;
+			this->defaultButton->Text = L"Load Default Values";
+			this->defaultButton->UseVisualStyleBackColor = true;
+			this->defaultButton->Click += gcnew System::EventHandler(this, &Setup::defaultButton_Click);
+			// 
 			// Setup
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(324, 139);
+			this->Controls->Add(this->defaultButton);
 			this->Controls->Add(this->enterSubjectsButton);
 			this->Controls->Add(this->enterRoomsButton);
 			this->Controls->Add(this->enterTeachersButton);
@@ -378,5 +392,9 @@ private: System::Void enterSubjectsButton_Click(System::Object^  sender, System:
 	subjectsPageNum++;
 }
 
+private: System::Void defaultButton_Click(System::Object^  sender, System::EventArgs^  e) {
+	TimetableViewer ^ form = gcnew TimetableViewer;
+	form->ShowDialog();
+}
 };
 }
