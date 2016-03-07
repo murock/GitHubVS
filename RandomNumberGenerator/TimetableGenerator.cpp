@@ -2,16 +2,24 @@
 #include <time.h>
 #include "TimetableGenerator.h"
 
+void ClearGlobals() {
+	subjects.clear();
+	hoursSubject.clear();
+	groupNames.clear();
+	teacherNames.clear();
+	roomNames.clear();
+	subjectsTaken.clear();
+	attachedTeachers.clear();
+	Timetables.clear();
+}
+
 void AttachTeachertoGroup() {
-	int groupCount = 0;
-	int subjectCount = 0;
 	srand(time(0));
 
-
-	while (groupCount < groupNames.size()) {
+	for (int groupCount = 0; groupCount < groupNames.size(); groupCount++) {
 		std::vector<std::string> subjectsTakenByCurrentGroup = subjectsTaken[groupCount]; //gets the subjects taken by the current group
 		std::vector<std::string> teachersForGroup;
-		while (subjectCount < subjectsTakenByCurrentGroup.size()) {
+		for (int subjectCount = 0; subjectCount < subjectsTakenByCurrentGroup.size(); subjectCount++) {
 
 			std::vector<std::string>::iterator it;
 			it = find(subjects.begin(), subjects.end(), subjectsTakenByCurrentGroup[subjectCount]);
@@ -24,20 +32,25 @@ void AttachTeachertoGroup() {
 			teachersForGroup.push_back(tempTeachers[teacherNum]);					//put a random teacher who teachers the subject into the teachers for this groups vector
 			std::string str = groupNames[groupCount], str2 = tempTeachers[teacherNum], str3 = subjectsTakenByCurrentGroup[subjectCount];
 			_RPT1(0, "Group %s will be taught by %s for %s\n", str.c_str(),str2.c_str(),str3.c_str());  //prints to output
-			subjectCount++;
+
 		}
-		subjectCount = 0;
 		attachedTeachers.push_back(teachersForGroup);				//put in all the teachers assigned to that group into the attached teachers vector
-		groupCount++;
 	}
 
 }
 
 
 std::vector<std::string> AssignTimetable(int periodCount,std::vector<std::vector<std::string>> periodsArray, int groupCount, int subjectNum, std::vector<std::string> currentGroupsTeachers, int teacherPosition, std::vector<std::string> tempRoomNames, int roomNum) {
-	_RPT1(0, "Period: %d Group: %s Subject: %s Teacher: %s Room: %s\n", periodCount, groupNames[groupCount].c_str(), subjects[subjectNum].c_str(), currentGroupsTeachers[teacherPosition].c_str(), tempRoomNames[roomNum].c_str());  //prints to output
+
 	std::vector<std::string> periods = periodsArray[groupCount];	//create periods vector from the periods array
-	periods.push_back(subjects[subjectNum]);		//save the subject to the periods vector
+	if (currentGroupsTeachers[teacherPosition] == "FreeTeacher") {
+		periods.push_back("Free");		//save the free subject to the periods vector
+		_RPT1(0, "Period: %d Group: %s Subject: %s Teacher: %s Room: %s\n", periodCount, groupNames[groupCount].c_str(), "Free", currentGroupsTeachers[teacherPosition].c_str(), tempRoomNames[roomNum].c_str());  //prints to output
+	}
+	else {
+		periods.push_back(subjects[subjectNum]);		//save the subject to the periods vector
+		_RPT1(0, "Period: %d Group: %s Subject: %s Teacher: %s Room: %s\n", periodCount, groupNames[groupCount].c_str(), subjects[subjectNum].c_str(), currentGroupsTeachers[teacherPosition].c_str(), tempRoomNames[roomNum].c_str());  //prints to output
+	}
 	periods.push_back(currentGroupsTeachers[teacherPosition]);	//save the teacher to the periods vector
 	periods.push_back(tempRoomNames[roomNum]);		//save the room number to periods vector
 	Timetable tempTimetable(groupNames[groupCount], periods);									
@@ -46,10 +59,10 @@ std::vector<std::string> AssignTimetable(int periodCount,std::vector<std::vector
 }
 
 
-int checkMaxHoursReached(std::vector<int> tempHoursPerSubjectGroup, int groupCount, std::vector<std::string> currentTeachers, int externalSubjectNum) {	//check if the max hours have been reached for every subject for this group
-
+int checkMaxHoursReached(std::vector<int> tempHoursPerSubjectGroup, int groupCount, std::vector<std::string> currentTeachers) {	//check if the max hours have been reached for every subject for this group
 	std::vector<std::string> subjectsTakenByGroup = subjectsTaken[groupCount];	//get the subjects taken by the group
-
+	
+	std::vector<int> availableSubjects;
 
 	for (std::vector<std::string>::const_iterator iter = subjectsTakenByGroup.begin(); iter != subjectsTakenByGroup.end(); ++iter) {		//iterates through the subjects taken by the group
 		std::vector<std::string>::iterator it;
@@ -65,10 +78,20 @@ int checkMaxHoursReached(std::vector<int> tempHoursPerSubjectGroup, int groupCou
 
 
 		if ((hoursSubject[subjectNum] > tempHoursPerSubjectGroup[subjectNum]) && (std::find(currentTeachers.begin(), currentTeachers.end(), currentGroupsTeachers[teacherPosition]) == currentTeachers.end())) {	//if subject remains with hours left to teach and teacher is avaliable
-			return subjectNum;
+			availableSubjects.push_back(subjectNum);
 		}
 	}
-		return subjects.size()+1;
+
+
+
+		if (availableSubjects.size() == 0)
+			return subjects.size()+1;
+		else {
+			int Rnum = rand();
+			int rSubjectNum = (Rnum % availableSubjects.size());	//random number between 0 and the total number of stored subjectNums
+			return availableSubjects[rSubjectNum];
+		}
+
 
 
 }
@@ -122,8 +145,8 @@ void Generate(){
 		groupCount = 0;
 
 
-		int iterationCount = 0;			//counts the number of times the randomely selected subject max hours were reached
 		while (groupCount < groupNames.size()) {		// while there are still remaining groups without a timetable
+		//	_RPT1(0, "test groupCount is %d \n", groupCount);  //prints to output
 			int freePeriodFlag = 0;			//indicates weather the current period for the group is a free or not
 
 			std::vector<std::string> subjectsTakenByCurrentGroup = subjectsTaken[groupCount]; //gets the subjects taken by the current group   
@@ -135,6 +158,17 @@ void Generate(){
 			it = find(subjects.begin(), subjects.end(), subjectsTakenByCurrentGroup[rSubjectNum]);	//find the subject in the subjects global vector
 			int subjectNum = std::distance(subjects.begin(), it);	//return the position of the subject
 
+			std::vector<int> tempHoursPerSubjectGroup = hoursPerSubjectGroup[groupCount];					//create the tempHoursPerSubjectGroup 
+
+			//check if max hours for that subject is reached 
+			int testTimetable = checkMaxHoursReached(tempHoursPerSubjectGroup, groupCount, currentTeachers);
+			if (testTimetable == (subjects.size() + 1)) {
+				freePeriodFlag = 1;
+			}
+			else {
+				subjectNum = testTimetable;
+			}
+
 
 			std::vector<std::string> currentGroupsTeachers = attachedTeachers[groupCount];	//gets the current groups set of teachers
 
@@ -145,10 +179,7 @@ void Generate(){
 
 
 
-
-			if (std::find(currentTeachers.begin(), currentTeachers.end(), currentGroupsTeachers[teacherPosition]) == currentTeachers.end()) {			//if the current teacher is busy then choose a new subject for the group for this period
-				currentTeachers.push_back(currentGroupsTeachers[teacherPosition]);								//put the current teacher into the currentteachers vector for this period
-				std::vector<int> tempHoursPerSubjectGroup = hoursPerSubjectGroup[groupCount];					//create the tempHoursPerSubjectGroup 
+	
 
 				//room selection
 				std::vector<std::string> tempRoomNames = roomNames[subjectNum];					//get all rooms for current subject
@@ -179,18 +210,11 @@ void Generate(){
 
 				//end room selection
 
-				int testTimetable = checkMaxHoursReached(tempHoursPerSubjectGroup, groupCount, currentTeachers, subjectNum);
-				if (testTimetable == (subjects.size()+1)) {
-					freePeriodFlag = 1;
-				}
-				else {
-					subjectNum = testTimetable;
-				}
-				
-				
 
-				if ((hoursSubject[subjectNum] > tempHoursPerSubjectGroup[subjectNum]) && (freePeriodFlag == 0)) {	//if max number of hours for that subject for that class is met then choose a new subject. Or if subjects for that class exhausted then give them a free period
-					iterationCount = 0;
+				
+				
+			//	_RPT1(0, "flag is %d \n", freePeriodFlag);  //prints to output
+				if (freePeriodFlag == 0) {	// assign chosen subject --(hoursSubject[subjectNum] > tempHoursPerSubjectGroup[subjectNum]) && 
 					tempHoursPerSubjectGroup[subjectNum]++;										//increment the hour for that subject by 1
 					hoursPerSubjectGroup.at(groupCount) = tempHoursPerSubjectGroup;		//save the updated vector to the hoursPerSubjectGroup vector
 
@@ -200,16 +224,14 @@ void Generate(){
 
 
 					currentRooms.push_back(tempRoomNames[roomNum]);			//save the selected room to the current rooms for that period vector
+					currentTeachers.push_back(currentGroupsTeachers[teacherPosition]);								//put the current teacher into the currentteachers vector for this period
 					periodsArray[groupCount] = AssignTimetable(periodCount, periodsArray, groupCount, subjectNum, currentGroupsTeachers, teacherPosition, tempRoomNames, roomNum);		//assign the timetable to the global timetable variable and save the periodsArray in its current state
 
 					groupCount++;			//go to the next group
 
 				}
 				else if (freePeriodFlag == 1) {				// assign free period
-					subjectNum = 10;		//make the subjectNum point to "Free"
-					currentRooms.push_back(tempRoomNames[roomNum]);			//save the selected room to the current rooms for that period vector
-					currentTeachers.pop_back();
-					currentRooms.pop_back();
+				//	subjectNum = 10;		//make the subjectNum point to "Free"
 					tempRoomNames[roomNum] = "FreeRoom";
 					currentGroupsTeachers[teacherPosition] = "FreeTeacher";
 					periodsArray[groupCount] = AssignTimetable(periodCount,periodsArray, groupCount, subjectNum, currentGroupsTeachers, teacherPosition, tempRoomNames, roomNum);	//assign the timetable to the global timetable variable and save the periodsArray in its current state
@@ -217,13 +239,9 @@ void Generate(){
 					groupCount++;			//go to the next group
 
 				}
-				else {
-					iterationCount++;
-					currentTeachers.pop_back();
-				}
 
 
-			}
+			//}
 		}
 		periodCount++;			//go to next period
 		_RPT1(0, "Period Count is %d\n", periodCount);  //prints to output
@@ -237,7 +255,7 @@ bool checkDuplicates(std::vector<std::string> vec)
 }
 
 
-void checkTimetable() {			//check all hours scheduled not too little or too many(NEED TO DO THIS ONLYY CHECK FOR TOO MANY HOURS), no double bookings of rooms/teachers/groups,
+bool checkTimetable() {			//check all hours scheduled not too little or too many no double bookings of rooms/teachers/groups, returns 1 if not feasible
 
 	std::vector<std::vector<int>> subjectHoursCheck;				// with subjects ordered how they were first typed in
 	//make the subjectHoursCheck vector the correct size
@@ -298,6 +316,7 @@ void checkTimetable() {			//check all hours scheduled not too little or too many
 				if (hoursCurrentSubject > hoursSubject[globalSubjectNum]) {				//if number of hours taken for that subject exceeds total hours required for it
 					_RPT0(0, "Timetable not feasible, Too many hours for subject\n");  //prints to output
 					feasible = 1;
+					return 1;
 				}
 
 
@@ -316,12 +335,14 @@ void checkTimetable() {			//check all hours scheduled not too little or too many
 		if (!checkDuplicates(currentTeachers)) {
 			_RPT0(0, "Timetable not feasible, Duplicate teachers in same period\n");  //prints to output
 			feasible = 1;
+			return 1;
 		}
 
 
 		if (!checkDuplicates(currentRooms)) {
 			_RPT0(0, "Timetable not feasible, Duplicate rooms in same period\n");  //prints to output
 			feasible = 1;
+			return 1;
 		}
 		
 
@@ -348,6 +369,7 @@ void checkTimetable() {			//check all hours scheduled not too little or too many
 			if (currentGroupsSubjectHours[j] != hoursSubject[subjectNum]) {
 				_RPT0(0, "Timetable not feasible, Not enough hours for subject\n");  //prints to output
 				feasible = 1;
+				return 1;
 			}
 
 		}
@@ -356,10 +378,14 @@ void checkTimetable() {			//check all hours scheduled not too little or too many
 	}
 
 
-	if (feasible == 0)
+	if (feasible == 0) {
 		_RPT0(0, "Timetable is feasible\n");  //prints to output
-	else
+		return 0;
+	}
+	else {
 		_RPT0(0, "Timetable is infeasible\n");  //prints to output
+		return 1;
+	}
 }
 
 
@@ -433,7 +459,7 @@ void ScoreTimetable() {		//lower score is better
 }
 
 void DefaultValues() {
-	 subjects = { "Maths", "English", "French","Geography","PE","I.C.T","Economics","Science","History","Art","Free" };	//subject names
+	 subjects = { "Maths", "English", "French","Geography","PE","I.C.T","Economics","Science","History","Art" };	//subject names
 
 
 
@@ -449,7 +475,7 @@ void DefaultValues() {
 	 }*/
 	 hoursSubject = {6,6,4,4,2,5,4,6,4,3};		//hours taught per subject
 
-     groupNames = {"7A","7B","8A","8B"}; //class names
+     groupNames = {"7A","7B","8A","8B","9A","9B","10A","10B"}; //class names
 
 	 std::vector<std::string> temp = { "Mr Maths1","Miss Maths2", "Dr Maths3" }, temp2 = { "M1","M2","M3" };
 	 roomNames.push_back(temp2);
@@ -493,10 +519,18 @@ void DefaultValues() {
 
 	 temp = {"Maths","English","Economics","PE"};
 	 subjectsTaken.push_back(temp);
-	 temp = {"Science","English","History"};
+	 temp = { "Maths","English","Economics","PE" };
 	 subjectsTaken.push_back(temp);
-	 temp = { "Geography","Maths","History","Art" };
+	 temp = { "Maths","English","Economics","PE" };
 	 subjectsTaken.push_back(temp);
-	 temp = { "French","Science","History","PE" };
+	 temp = { "Maths","English","Economics","PE" };
+	 subjectsTaken.push_back(temp);
+	 temp = { "Maths","English","Economics","PE" };
+	 subjectsTaken.push_back(temp);
+	 temp = { "Maths","English","Economics","PE" };
+	 subjectsTaken.push_back(temp);
+	 temp = { "Maths","English","Economics","PE" };
+	 subjectsTaken.push_back(temp);
+	 temp = { "Maths","English","Economics","PE" };
 	 subjectsTaken.push_back(temp);
 }

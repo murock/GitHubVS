@@ -201,6 +201,8 @@ namespace TimetableGui {
 
 		}
 #pragma endregion
+
+
 	private: System::Void Setup_Load(System::Object^  sender, System::EventArgs^  e) {
 	}
 
@@ -210,16 +212,10 @@ namespace TimetableGui {
 			 int subjectsPageNum = 0;
 	private: System::Void NextButton_Click(System::Object^  sender, System::EventArgs^  e) {
 
-		_RPT0(0, "Button Pressed\n");
-			DefaultValues();
-		//_RPT0(0, "Default values generated\n");
 
-			AttachTeachertoGroup();
-			Generate();
-			checkTimetable();
-		//	ScoreTimetable();
 
-			/*
+
+			
 			String^ temp;
 			temp = System::Convert::ToString(AnswerBox->Text);	//gets the text from the answer box and saves it to temp
 
@@ -385,14 +381,37 @@ private: System::Void enterSubjectsButton_Click(System::Object^  sender, System:
 		AnswerBox->Text = "";
 	}
 	else {
+
 		this->QuestionLabel->Text = "Set-up Finished";
 		AnswerBox->Text = "";	//clear answer box text
-
+		AttachTeachertoGroup();
+		Generate();
+		checkTimetable();
+		TimetableViewer ^ form = gcnew TimetableViewer;
+		form->ShowDialog();
 		}
 	subjectsPageNum++;
 }
 
 private: System::Void defaultButton_Click(System::Object^  sender, System::EventArgs^  e) {
+
+
+	ClearGlobals();
+	DefaultValues();
+	AttachTeachertoGroup();
+	Generate();
+	bool checkFeasible = checkTimetable();
+	for (int i = 0; (checkFeasible && i < 50); i++) {
+		ClearGlobals();		//MAY NEED TO CHANGE THIS TO KEEP USER INPUT
+		DefaultValues();	//THIS IS NOT GOOD RESETING USER TYPED IN INPUT
+		AttachTeachertoGroup();
+		Generate();
+		checkFeasible = checkTimetable();
+		if (i == 50)
+			this->QuestionLabel->Text = "feasible timetable cannot be made check your inputs";
+	}
+
+	//	ScoreTimetable();
 	TimetableViewer ^ form = gcnew TimetableViewer;
 	form->ShowDialog();
 }
