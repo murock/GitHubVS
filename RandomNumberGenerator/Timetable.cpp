@@ -20,3 +20,11 @@ std::string Timetable::getGroup() const {
 std::vector<std::string> Timetable::getPeriods() const {
 	return newPeriods;
 }
+
+void Timetable::setGroup(std::string g) {
+	newGroup = g;
+}
+
+void Timetable::setPeriods(std::vector<std::string> p) {
+	newPeriods = p;
+}

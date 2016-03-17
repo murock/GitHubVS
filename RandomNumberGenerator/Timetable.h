@@ -19,6 +19,9 @@ public:
 	std::string getGroup() const;
 	std::vector<std::string> getPeriods() const;
 
+	void setGroup(std::string g);
+	void setPeriods(std::vector<std::string> p);
+
 
 
 
@@ -27,4 +30,4 @@ private:		//can't be accessed by outside files, can't be changed elsewhere
 	std::vector<std::string> newPeriods;
 };
 
-#endif
+#endif 

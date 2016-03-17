@@ -411,7 +411,7 @@ private: System::Void defaultButton_Click(System::Object^  sender, System::Event
 			this->QuestionLabel->Text = "feasible timetable cannot be made check your inputs";
 	}
 
-	//	ScoreTimetable();
+	ScoreTimetable();
 	TimetableViewer ^ form = gcnew TimetableViewer;
 	form->ShowDialog();
 }

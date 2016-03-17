@@ -375,8 +375,6 @@ namespace TimetableGui {
 
 		}
 	private: System::Void enterTimetableButton_Click(System::Object^  sender, System::EventArgs^  e) {
-
-
 		String^ temp;
 		temp = System::Convert::ToString(textBox1->Text);	//gets the text from the textbox saves it to temp
 		std::string groupName = msclr::interop::marshal_as< std::string >(temp); // converts from a String^ to a std::string
@@ -387,27 +385,23 @@ namespace TimetableGui {
 				currentTimetable = *iter;
 			}
 		}
-		
-		for (int periodCount = 0; periodCount < 25; periodCount++) {
-
-			//Timetable currentTimetable = Timetables[1];	//select the current timetable
-			std::vector<std::string> periods = currentTimetable.getPeriods();	//get the period information for that group
-
-			std::string currentTeacher = periods[(periodCount * 3 + 1)];		//get current teacher for that period
-
-
-			std::string currentRoom = periods[(periodCount * 3 + 2)];		//get current room for that period
-
-
-			std::string subject = periods[periodCount * 3];			//get current subject
-			String^ str = msclr::interop::marshal_as< String^ >(subject); 
-			String^ str2 = msclr::interop::marshal_as< String^ >(currentTeacher);
-			String^ str3 = msclr::interop::marshal_as< String^ >(currentRoom);
-
-			if (subject == "Free")
-				this->LabelArr[periodCount]->Text = str;
-			else
-				this->LabelArr[periodCount]->Text = str + "\n" + str2 + "\n" + str3 ;
+		std::vector<std::string> checkEmpty = currentTimetable.getPeriods();
+		if (checkEmpty.empty())
+			this->label1->Text = L"Invalid Class Name try again";
+		else {
+			for (int periodCount = 0; periodCount < 25; periodCount++) {
+				std::vector<std::string> periods = currentTimetable.getPeriods();	//get the period information for that group
+				std::string currentTeacher = periods[(periodCount * 3 + 1)];		//get current teacher for that period
+				std::string currentRoom = periods[(periodCount * 3 + 2)];		//get current room for that period
+				std::string subject = periods[periodCount * 3];			//get current subject
+				String^ str = msclr::interop::marshal_as< String^ >(subject);
+				String^ str2 = msclr::interop::marshal_as< String^ >(currentTeacher);
+				String^ str3 = msclr::interop::marshal_as< String^ >(currentRoom);
+				if (subject == "Free")
+					this->LabelArr[periodCount]->Text = str;
+				else
+					this->LabelArr[periodCount]->Text = str + "\n" + str2 + "\n" + str3;
+			}
 		}
 	}
 private: System::Void tableLayoutPanel3_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
