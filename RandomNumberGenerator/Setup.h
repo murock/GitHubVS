@@ -49,6 +49,7 @@ namespace TimetableGui {
 	private: System::Windows::Forms::Button^  enterRoomsButton;
 	private: System::Windows::Forms::Button^  enterSubjectsButton;
 	private: System::Windows::Forms::Button^  defaultButton;
+	private: System::Windows::Forms::Button^  preconButton;
 
 
 	protected:
@@ -76,6 +77,7 @@ namespace TimetableGui {
 			this->enterRoomsButton = (gcnew System::Windows::Forms::Button());
 			this->enterSubjectsButton = (gcnew System::Windows::Forms::Button());
 			this->defaultButton = (gcnew System::Windows::Forms::Button());
+			this->preconButton = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// NextButton
@@ -170,7 +172,7 @@ namespace TimetableGui {
 			// 
 			// defaultButton
 			// 
-			this->defaultButton->Location = System::Drawing::Point(169, 93);
+			this->defaultButton->Location = System::Drawing::Point(169, 85);
 			this->defaultButton->Name = L"defaultButton";
 			this->defaultButton->Size = System::Drawing::Size(140, 27);
 			this->defaultButton->TabIndex = 9;
@@ -178,11 +180,22 @@ namespace TimetableGui {
 			this->defaultButton->UseVisualStyleBackColor = true;
 			this->defaultButton->Click += gcnew System::EventHandler(this, &Setup::defaultButton_Click);
 			// 
+			// preconButton
+			// 
+			this->preconButton->Location = System::Drawing::Point(129, 132);
+			this->preconButton->Name = L"preconButton";
+			this->preconButton->Size = System::Drawing::Size(180, 28);
+			this->preconButton->TabIndex = 10;
+			this->preconButton->Text = L"Load Preconfiured Timetables";
+			this->preconButton->UseVisualStyleBackColor = true;
+			this->preconButton->Click += gcnew System::EventHandler(this, &Setup::preconButton_Click);
+			// 
 			// Setup
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(324, 139);
+			this->ClientSize = System::Drawing::Size(324, 186);
+			this->Controls->Add(this->preconButton);
 			this->Controls->Add(this->defaultButton);
 			this->Controls->Add(this->enterSubjectsButton);
 			this->Controls->Add(this->enterRoomsButton);
@@ -394,24 +407,35 @@ private: System::Void enterSubjectsButton_Click(System::Object^  sender, System:
 }
 
 private: System::Void defaultButton_Click(System::Object^  sender, System::EventArgs^  e) {
-
-
+	std::vector<std::string> names = {"1","2","3","4","5","6","7","8","9","10"};
 	ClearGlobals();
 	DefaultValues();
 	AttachTeachertoGroup();
-	Generate();
-	bool checkFeasible = checkTimetable();
-	for (int i = 0; (checkFeasible && i < 50); i++) {
-		ClearGlobals();		//MAY NEED TO CHANGE THIS TO KEEP USER INPUT
-		DefaultValues();	//THIS IS NOT GOOD RESETING USER TYPED IN INPUT
-		AttachTeachertoGroup();
-		Generate();
-		checkFeasible = checkTimetable();
-		if (i == 50)
-			this->QuestionLabel->Text = "feasible timetable cannot be made check your inputs";
+	for (std::vector<std::string>::const_iterator iter = names.begin(); iter != names.end(); ++iter) {
+		bool checkFeasible = 1;
+		for (int i = 0; checkFeasible; i++) {
+			//ClearGlobals();		//MAY NEED TO CHANGE THIS TO KEEP USER INPUT
+		//	DefaultValues();	//THIS IS NOT GOOD RESETING USER TYPED IN INPUT
+		//	AttachTeachertoGroup();
+			Timetables.clear();
+			Generate();
+			checkFeasible = checkTimetable();
+			_RPT1(0, "i is %d\n", i);  //prints to output
+			if (i == 8999)
+				this->QuestionLabel->Text = "TIMETABLE PRODUCED NOT FEASIBLE CHECK YOUR INPUTS";
+		}
+		std::string name = *iter;
+		SaveTimetable(name);
 	}
-
+	SaveTeachers();
 	ScoreTimetable();
+	TimetableViewer ^ form = gcnew TimetableViewer;
+	form->ShowDialog();
+}
+private: System::Void preconButton_Click(System::Object^  sender, System::EventArgs^  e) {
+	ClearGlobals();
+	DefaultValues();
+	LoadTimetable();
 	TimetableViewer ^ form = gcnew TimetableViewer;
 	form->ShowDialog();
 }

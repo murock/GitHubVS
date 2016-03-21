@@ -385,6 +385,7 @@ namespace TimetableGui {
 				currentTimetable = *iter;
 			}
 		}
+		this->label1->Text = L"Type the Class\'s Timetable you want to view";
 		std::vector<std::string> checkEmpty = currentTimetable.getPeriods();
 		if (checkEmpty.empty())
 			this->label1->Text = L"Invalid Class Name try again";
