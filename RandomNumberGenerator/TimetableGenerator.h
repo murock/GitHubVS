@@ -9,6 +9,7 @@ bool checkTimetable();
 void ScoreTimetable();
 void ClearGlobals();
 void SaveTimetable(std::string name);
+void SaveTimetable1();
 void LoadTimetable();
 void SaveTeachers();
 #endif

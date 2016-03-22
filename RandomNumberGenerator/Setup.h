@@ -407,11 +407,11 @@ private: System::Void enterSubjectsButton_Click(System::Object^  sender, System:
 }
 
 private: System::Void defaultButton_Click(System::Object^  sender, System::EventArgs^  e) {
-	std::vector<std::string> names = {"1","2","3","4","5","6","7","8","9","10"};
+//	std::vector<std::string> names = {"1","2","3","4","5","6","7","8","9","10"};
 	ClearGlobals();
 	DefaultValues();
 	AttachTeachertoGroup();
-	for (std::vector<std::string>::const_iterator iter = names.begin(); iter != names.end(); ++iter) {
+	//for (std::vector<std::string>::const_iterator iter = names.begin(); iter != names.end(); ++iter) {
 		bool checkFeasible = 1;
 		for (int i = 0; checkFeasible; i++) {
 			//ClearGlobals();		//MAY NEED TO CHANGE THIS TO KEEP USER INPUT
@@ -421,12 +421,12 @@ private: System::Void defaultButton_Click(System::Object^  sender, System::Event
 			Generate();
 			checkFeasible = checkTimetable();
 			_RPT1(0, "i is %d\n", i);  //prints to output
-			if (i == 8999)
-				this->QuestionLabel->Text = "TIMETABLE PRODUCED NOT FEASIBLE CHECK YOUR INPUTS";
+			//if (i == 4)
+			//	this->QuestionLabel->Text = "TIMETABLE PRODUCED NOT FEASIBLE CHECK YOUR INPUTS";
 		}
-		std::string name = *iter;
-		SaveTimetable(name);
-	}
+	//	std::string name = *iter;
+		SaveTimetable1();
+	//}
 	SaveTeachers();
 	ScoreTimetable();
 	TimetableViewer ^ form = gcnew TimetableViewer;
