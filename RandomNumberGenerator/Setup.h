@@ -2,7 +2,7 @@
 #include "mylib.h"
 #include "TimetableGenerator.h"
 #include "TimetableViewer.h"
-
+#include "timetableScore.h"
 
 namespace TimetableGui {
 
@@ -406,6 +406,7 @@ private: System::Void enterSubjectsButton_Click(System::Object^  sender, System:
 	subjectsPageNum++;
 }
 
+
 private: System::Void defaultButton_Click(System::Object^  sender, System::EventArgs^  e) {
 /*//	std::vector<std::string> names = {"1","2","3","4","5","6","7","8","9","10"};
 	ClearGlobals();
@@ -434,7 +435,11 @@ private: System::Void defaultButton_Click(System::Object^  sender, System::Event
 	ClearGlobals();
 	DefaultValues();
 	AttachTeachertoGroup();
+	std::vector<timetableScore> population;
+	population = optimiseTimetable(4, population, 1);
 
+
+/*
 	std::vector<Timetable> testTimetable = GenerateV2();
 
 
@@ -446,7 +451,7 @@ private: System::Void defaultButton_Click(System::Object^  sender, System::Event
 
 	Timetables = testTimetable;
 	TimetableViewer ^ form = gcnew TimetableViewer;
-	form->ShowDialog();
+	form->ShowDialog();*/
 }
 private: System::Void preconButton_Click(System::Object^  sender, System::EventArgs^  e) {
 	ClearGlobals();

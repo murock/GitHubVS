@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iterator>
 #include <iostream>
+#include "timetableScore.h"
 
 void ClearGlobals() {
 	subjects.clear();
@@ -203,7 +204,7 @@ std::vector<Timetable> GenerateV2() {
 				allocatedPeriods = tempPeriods.allocatedPeriods;
 			}
 			periodCount++;			//go to next period							
-			_RPT1(0, "Period Count is %d\n", periodCount);  //prints to output
+			//_RPT1(0, "Period Count is %d\n", periodCount);  //prints to output
 		}
 		Timetable groupTimetable(groupNames[groupCount], periodsArray[groupCount]); //save the timetable for the group
 		timetableChromosome.push_back(groupTimetable);	// save the groups timetable to the timetable Chromosome 
@@ -369,12 +370,56 @@ int checkTimetableV2(std::vector<Timetable> currentTimetables) {			//check all h
 	return score;
 }
 
+/*struct timetableScore {
+	std::vector<Timetable> timetableinfo;
+	int score;
+};*/
+
+
+std::vector<timetableScore> createInitalPopulation(int populationSize) {
+	std::vector<timetableScore> population;
+	for (int i = 0; i < populationSize; i++) {
+		timetableScore timetableMember;
+		std::vector<Timetable> tempTimetables = GenerateV2();
+		timetableMember.setTimetable(tempTimetables);
+		int score = ScoreTimetable(tempTimetables) + (checkTimetableV2(tempTimetables) * 10);	//value meeting hard constraints over soft constraints
+		timetableMember.setScore(score);
+		population.push_back(timetableMember);
+		_RPT1(0, "Population size is %d\n", i);  //prints to output	
+	}
+	return population;
+}
+
+std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<timetableScore> population, bool initalPopCheck, int populationSize) {
+	if (initalPopCheck == 1) {
+		std::vector<timetableScore> population = createInitalPopulation(populationSize);
+	}
+
+	int crossoverPoint = groupNames.size() / 2;
+	int remainingAfterPoint = groupNames.size() - crossoverPoint;		//MAY NOT NEED
+
+	for (int i = 0; i < maxIterations; i++) {
+		for (int j = 0; j < populationSize; j = j + 2) {
+			timetableScore parent1 = population[j];
+			std::vector<Timetable> parent1Timetables = parent1.getTimetable();
+			timetableScore parent2 = population[j+1];
+			std::vector<Timetable> parent2Timetables = parent2.getTimetable();
+			std::vector<Timetable> parent1Chromosomes;
+			std::vector<Timetable> parent2Chromosomes;
+			for (int k = 0; k < crossoverPoint; k++) {		//get first half of the chromosomes
+				parent1Chromosomes.push_back(parent1Timetables[k]);
+				parent2Chromosomes.push_back(parent2Timetables[k]);
+			}
+			for (int k = crossoverPoint; k < groupNames.size; k++) {	//get second half of chromosomes
+				parent1Chromosomes.push_back(parent1Timetables[k]);
+				parent2Chromosomes.push_back(parent2Timetables[k]);
+			}
+		}
+	}
+}
 void DefaultValues() {
 	subjects = { "English", "Maths","Science","Art" ,"ICT","Humanities","RE","French","Music","PE","PSHE","History","A-Level Maths","Psychology","A-Level English","Sociology","Law","Physics" };	//subject names 
-
-
-
-
+		
 	hoursSubject = { 4,3,3,3,1,4,1,2,1,2,1,4,4,4,4,4,4,4 };		//hours taught per subject
 
 	groupNames = { "7A","7B","7C","8A","8B","8C","9A","9B","9C","12A","12B","12C","13A","13B","13C" }; //class names
@@ -514,9 +559,7 @@ void DefaultValues() {
 
 }
 
-void optimiseTimtable() {
 
-}
 
 //OLD CODE
 

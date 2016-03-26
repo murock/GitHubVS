@@ -143,6 +143,7 @@
     <ClCompile Include="TeacherSetup.cpp" />
     <ClCompile Include="Timetable.cpp" />
     <ClCompile Include="TimetableGenerator.cpp" />
+    <ClCompile Include="timetableScore.cpp" />
     <ClCompile Include="TimetableViewer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +159,7 @@
     </ClInclude>
     <ClInclude Include="Timetable.h" />
     <ClInclude Include="TimetableGenerator.h" />
+    <ClInclude Include="timetableScore.h" />
     <ClInclude Include="TimetableViewer.h">
       <FileType>CppForm</FileType>
     </ClInclude>
