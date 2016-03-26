@@ -6,10 +6,12 @@ void Generate();
 void DefaultValues();
 void AttachTeachertoGroup();
 bool checkTimetable();
-void ScoreTimetable();
+int ScoreTimetable(std::vector<Timetable> currentTimetables);
 void ClearGlobals();
 void SaveTimetable(std::string name);
 void SaveTimetable1();
 void LoadTimetable();
 void SaveTeachers();
+std::vector<Timetable> GenerateV2();
+int checkTimetableV2(std::vector<Timetable> currentTimetables);
 #endif

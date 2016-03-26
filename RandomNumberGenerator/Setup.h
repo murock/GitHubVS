@@ -407,7 +407,7 @@ private: System::Void enterSubjectsButton_Click(System::Object^  sender, System:
 }
 
 private: System::Void defaultButton_Click(System::Object^  sender, System::EventArgs^  e) {
-//	std::vector<std::string> names = {"1","2","3","4","5","6","7","8","9","10"};
+/*//	std::vector<std::string> names = {"1","2","3","4","5","6","7","8","9","10"};
 	ClearGlobals();
 	DefaultValues();
 	AttachTeachertoGroup();
@@ -427,8 +427,24 @@ private: System::Void defaultButton_Click(System::Object^  sender, System::Event
 	//	std::string name = *iter;
 		SaveTimetable1();
 	//}
-	SaveTeachers();
-	ScoreTimetable();
+	SaveTeachers();*/
+
+
+
+	ClearGlobals();
+	DefaultValues();
+	AttachTeachertoGroup();
+
+	std::vector<Timetable> testTimetable = GenerateV2();
+
+
+
+	int hardScore = checkTimetableV2(testTimetable);
+	int softScore = ScoreTimetable(testTimetable);
+	_RPT1(0, "The score for meeting hard constraints is %d\n", hardScore);  //prints to output
+	_RPT1(0, "The score for meeting soft constraints is %d\n", softScore);  //prints to output
+
+	Timetables = testTimetable;
 	TimetableViewer ^ form = gcnew TimetableViewer;
 	form->ShowDialog();
 }
