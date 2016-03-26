@@ -404,15 +404,15 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 			std::vector<Timetable> parent1Timetables = parent1.getTimetable();
 			timetableScore parent2 = population[j+1];
 			std::vector<Timetable> parent2Timetables = parent2.getTimetable();
-			std::vector<Timetable> parent1Chromosomes;
-			std::vector<Timetable> parent2Chromosomes;
-			for (int k = 0; k < crossoverPoint; k++) {		//get first half of the chromosomes
-				parent1Chromosomes.push_back(parent1Timetables[k]);
-				parent2Chromosomes.push_back(parent2Timetables[k]);
+			std::vector<Timetable> child1;
+			std::vector<Timetable> child2;
+			for (int k = 0; k < crossoverPoint; k++) {		//first half of the chromosomes
+				child1.push_back(parent1Timetables[k]);
+				child2.push_back(parent2Timetables[k]);
 			}
-			for (int k = crossoverPoint; k < groupNames.size; k++) {	//get second half of chromosomes
-				parent1Chromosomes.push_back(parent1Timetables[k]);
-				parent2Chromosomes.push_back(parent2Timetables[k]);
+			for (int k = crossoverPoint; k < groupNames.size; k++) {	//second half of chromosomes
+				child2.push_back(parent1Timetables[k]);
+				child1.push_back(parent2Timetables[k]);
 			}
 		}
 	}
