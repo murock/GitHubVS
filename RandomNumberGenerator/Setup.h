@@ -436,7 +436,7 @@ private: System::Void defaultButton_Click(System::Object^  sender, System::Event
 	DefaultValues();
 	AttachTeachertoGroup();
 	std::vector<timetableScore> population;
-	population = optimiseTimetable(300, population, 1, 100);
+	population = optimiseTimetable(4, population, 1, 25);
 
 
 /*

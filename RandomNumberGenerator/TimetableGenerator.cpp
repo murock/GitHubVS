@@ -408,6 +408,26 @@ void SaveTimetable(std::string name) {
 	}
 }
 
+int selectParent(std::vector<timetableScore> population, int totalPopScore, int previousIterator) {
+	int selectionIterator = 0;
+	do  {
+		selectionIterator = 0;
+		int Rnum = rand();
+		int selectionNum = (Rnum % totalPopScore);	//get a random number between 0 and total population score
+//		_RPT1(0, "selectionNum is %d\n", selectionNum);  //prints to output
+		std::vector<timetableScore>::const_iterator iter = population.begin();
+		do  {
+			timetableScore currentTimetables = *iter;
+			int currentScore = currentTimetables.getScore();
+			selectionNum = selectionNum - currentScore;
+			selectionIterator++;
+			iter++;
+		} while (iter != population.end() && selectionNum > 0);
+	} while (previousIterator - 1 == selectionIterator);	//if same parent is picked loop again
+//	_RPT1(0, "return iterator is %d\n", selectionIterator -1);  //prints to output
+	return selectionIterator - 1; //as the loop increments 1 too many times
+}
+
 std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<timetableScore> population, bool initalPopCheck, int populationSize) {
 	if (initalPopCheck == 1) {
 		population = createInitalPopulation(populationSize);
@@ -417,7 +437,7 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 	int remainingAfterPoint = groupNames.size() - crossoverPoint;		//MAY NOT NEED
 	int memberCount = 0;
 	auto engine = std::default_random_engine{};
-	
+
 	for (int i = 0; i < maxIterations; i++) {
 		_RPT1(0, "Iteration count is %d\n", i);  //prints to output
 		std::sort(population.begin(), population.end());
@@ -427,49 +447,84 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 		int x = test.getScore();
 		_RPT1(0, "Member %d's score is %d after breeding\n", memberCount, test);  //prints to output
 		memberCount++;
-		}
+		} */
 		population.erase(population.begin() + populationSize, population.end());	//delete the extra members of the population
-		memberCount = 0;*/
+		//memberCount = 0;*/
 		int totalPopScore = 0;
 		memberCount = 0;
 		for (std::vector<timetableScore>::const_iterator iter = population.begin(); iter != population.end(); ++iter) {
 			timetableScore test = *iter;
 			int x = test.getScore();
-			_RPT1(0, "Member %d's score is %d after removing worst scores\n", memberCount, test);  //prints to output
+			_RPT1(0, "Member %d's score is %d\n", memberCount, test);  //prints to output
 			memberCount++;
 			totalPopScore = totalPopScore + x;
-		/*	//test code
-			Timetables = test.getTimetable();
-			std::ostringstream convert1;
-			convert1 << i;
-			std::string str = convert1.str();
-			std::ostringstream convert2;
-			convert2 << memberCount;
-			std::string str2 = convert2.str();
-			SaveTimetable(str + str2 + "GAtimetable");
-			//end test code */
+			/*	//test code
+				Timetables = test.getTimetable();
+				std::ostringstream convert1;
+				convert1 << i;
+				std::string str = convert1.str();
+				std::ostringstream convert2;
+				convert2 << memberCount;
+				std::string str2 = convert2.str();
+				SaveTimetable(str + str2 + "GAtimetable");
+				//end test code */
 		}
-		_RPT1(0, "Total populationScore is %d\n", totalPopScore);  //prints to output
+//		_RPT1(0, "Total populationScore is %d\n", totalPopScore);  //prints to output
 
 
 		std::vector<timetableScore> childPopulation;	//create population of children
-		//new breeding code
-		int Rnum = rand();
-		int selectionNum = (Rnum % totalPopScore);	//get a random number between 0 and total population score
-		int selectionIterator = 0;
-
-		for (std::vector<timetableScore>::const_iterator iter = population.begin(); (iter != population.end() && selectionNum > 0); ++iter) {
-			timetableScore currentTimetables = *iter;
-			int currentScore = currentTimetables.getScore();
-			selectionNum = selectionNum - currentScore;
-			selectionIterator++;
+		//test code
+		std::vector<int> timetableFreq;
+		for (int testi = 0; testi < population.size(); testi++) {
+			timetableFreq.push_back(0);
 		}
-		int selectParent1 = populationSize - selectionIterator - 1;	//as the loop with increment 1 too many times
-		_RPT1(0, "Timetable %d has been selected for breeding\n", selectParent1);  //prints to output
+		//test code end
 
 
+
+		//new breeding code
+		while (childPopulation.size() < 1000){//population.size()) {
+			int parent1Iterator = selectParent(population, totalPopScore, population.size() + 1);
+		//	_RPT1(0, "parent 1 iterator is %d\n", parent1Iterator);  //prints to output
+			int selectParent1 = populationSize - parent1Iterator - 1;		//population size - iterator as a lower score is better 
+	//		_RPT1(0, "Timetable %d has been selected as parent 1\n", selectParent1);  //prints to output
+			timetableFreq[selectParent1]++;
+			int parent2Iterator = selectParent(population, totalPopScore, parent1Iterator);
+		//	_RPT1(0, "parent 2 iterator is %d\n", parent2Iterator);  //prints to output
+			int selectParent2 = populationSize - parent2Iterator - 1;		//population size - iterator as a lower score is better 
+		//	_RPT1(0, "Timetable %d has been selected as parent 2\n", selectParent2);  //prints to output
+			timetableFreq[selectParent2]++;
+			timetableScore parent1 = population[selectParent1];
+			std::vector<Timetable> parent1Timetables = parent1.getTimetable();
+			timetableScore parent2 = population[selectParent2];
+			std::vector<Timetable> parent2Timetables = parent2.getTimetable();
+			std::vector<Timetable> child1;
+			std::vector<Timetable> child2;
+
+			for (int k = 0; k < crossoverPoint; k++) {		//first half of the chromosomes
+				child1.push_back(parent1Timetables[k]);
+				child2.push_back(parent2Timetables[k]);
+			}
+			for (int k = crossoverPoint; k < groupNames.size(); k++) {	//second half of chromosomes
+				child2.push_back(parent1Timetables[k]);
+				child1.push_back(parent2Timetables[k]);
+			}
+			childPopulation.push_back(giveScore(child1));
+			childPopulation.push_back(giveScore(child2));
+			int c = childPopulation.size();
+			_RPT1(0, "child population size is %d\n", c);  //prints to output
+		}
+	//	population = childPopulation;
+		//test code
+		int b = 0;
+		for (std::vector<int>::const_iterator iter2 = timetableFreq.begin(); iter2 != timetableFreq.end(); ++iter2) {
+			int a = *iter2;
+			_RPT1(0, "timetable %d has been selected %d times\n", b, a);  //prints to output
+			b++;
+		}
+		//test code end
 		//end new breeding code
-		int populationCount = 0;
+		/*int populationCount = 0;
 		std::shuffle(std::begin(population), std::end(population), engine);	//mix the population up
 		for (int j = 0; j < populationSize - 1; j = j + 2) {
 			timetableScore parent1 = population[j];
@@ -491,6 +546,9 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 			populationCount = populationCount + 2;
 		}
 		population = childPopulation;
+	}
+	*/
+
 	}
 	std::sort(population.begin(), population.end());
 	Timetables = population[0].getTimetable();
