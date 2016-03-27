@@ -22,6 +22,9 @@ public:
 	void setScore(int a);
 	void setTimetable(std::vector<Timetable> b);
 	
+	bool operator < (const timetableScore& str) const {
+		return (newScore < str.newScore);
+	}
 
 
 private:		//can't be accessed by outside files, can't be changed elsewhere

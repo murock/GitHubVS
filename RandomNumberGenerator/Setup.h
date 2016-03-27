@@ -436,7 +436,7 @@ private: System::Void defaultButton_Click(System::Object^  sender, System::Event
 	DefaultValues();
 	AttachTeachertoGroup();
 	std::vector<timetableScore> population;
-	population = optimiseTimetable(4, population, 1);
+	population = optimiseTimetable(300, population, 1, 100);
 
 
 /*
@@ -448,10 +448,10 @@ private: System::Void defaultButton_Click(System::Object^  sender, System::Event
 	int softScore = ScoreTimetable(testTimetable);
 	_RPT1(0, "The score for meeting hard constraints is %d\n", hardScore);  //prints to output
 	_RPT1(0, "The score for meeting soft constraints is %d\n", softScore);  //prints to output
-
-	Timetables = testTimetable;
+	
+	Timetables = testTimetable;*/
 	TimetableViewer ^ form = gcnew TimetableViewer;
-	form->ShowDialog();*/
+	form->ShowDialog();
 }
 private: System::Void preconButton_Click(System::Object^  sender, System::EventArgs^  e) {
 	ClearGlobals();

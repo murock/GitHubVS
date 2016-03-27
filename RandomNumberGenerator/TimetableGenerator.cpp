@@ -7,6 +7,9 @@
 #include <iostream>
 #include "timetableScore.h"
 
+
+
+
 void ClearGlobals() {
 	subjects.clear();
 	hoursSubject.clear();
@@ -261,12 +264,12 @@ int ScoreTimetable(std::vector<Timetable> currentTimetables) {		//lower score is
 			//check Two subsequent classes
 			if ((subject != "Free") && (lastPeriod == subject)) {
 				currentScore++;			//increase score if subsequent class
-				_RPT0(0, "Increasing score subsequent class \n");  //prints to output
+		//		_RPT0(0, "Increasing score subsequent class \n");  //prints to output
 			}
 			//check physically active lesson after lunch
 			if ((subject == "PE") && (periodDayCount == lunchPeriod)) {
 				currentScore++;		//increase score if PE after lunch
-				_RPT0(0, "Increasing score PE after lunch \n");  //prints to output
+		//		_RPT0(0, "Increasing score PE after lunch \n");  //prints to output
 			}
 			//check for empty timeslot between class
 			//_RPT1(0, "Period day count is %d period count is %d\n", periodDayCount,periodCount);
@@ -274,7 +277,7 @@ int ScoreTimetable(std::vector<Timetable> currentTimetables) {		//lower score is
 				if (subject == "Free")	//check if current subject is free
 					if ((lastPeriod != "Free") && (nextPeriod != "Free")) { //if both periods before and after the free are subjects then increase score
 						currentScore++;
-						_RPT0(0, "Increasing score free inbetween subjects \n");  //prints to output
+		//				_RPT0(0, "Increasing score free inbetween subjects \n");  //prints to output
 					}
 			}
 			//check free periods be put on the final day of the week
@@ -282,7 +285,7 @@ int ScoreTimetable(std::vector<Timetable> currentTimetables) {		//lower score is
 				if ((periodCount >= (totalHours - hoursPerDay)) && (periodCount < totalHours)) {	//if on final day of the week
 					if (subject != "Free") {		//if not a free period increase score
 						currentScore++;
-						_RPT0(0, "Increasing score not a free on friday \n");  //prints to output
+		//				_RPT0(0, "Increasing score not a free on friday \n");  //prints to output
 					}
 				}
 			}
@@ -290,12 +293,12 @@ int ScoreTimetable(std::vector<Timetable> currentTimetables) {		//lower score is
 			lastPeriod = subject;
 			periodDayCount++;
 		}
-		_RPT1(0, "The current score is %d\n", currentScore);  //prints to output
+	//	_RPT1(0, "The current score is %d\n", currentScore);  //prints to output
 		totalScore = totalScore + currentScore;	//add the current score to the total for the timetable
 		groupCount++;
-		_RPT1(0, "GroupCount is %d\n", groupCount);  //prints to output
+	//	_RPT1(0, "GroupCount is %d\n", groupCount);  //prints to output
 	}
-	_RPT1(0, "The TOTAL score is %d\n", totalScore);  //prints to output
+//	_RPT1(0, "The TOTAL score is %d\n", totalScore);  //prints to output
 	return totalScore;
 }
 
@@ -335,7 +338,7 @@ int checkTimetableV2(std::vector<Timetable> currentTimetables) {			//check all h
 				it = find(subjects.begin(), subjects.end(), subject);	//find the subject in the subjects global vector
 				int globalSubjectNum = std::distance(subjects.begin(), it);	//return the position of the subject
 				if (hoursCurrentSubject > hoursSubject[globalSubjectNum]) {				//if number of hours taken for that subject exceeds total hours required for it
-					_RPT0(0, "Timetable not feasible, Too many hours for subject\n");  //prints to output
+//					_RPT0(0, "Timetable not feasible, Too many hours for subject\n");  //prints to output
 					score++;
 				}
 				currentGroupsSubjectHours[subjectNum]++;		//Add an addtional hour for that group for that subject
@@ -344,11 +347,11 @@ int checkTimetableV2(std::vector<Timetable> currentTimetables) {			//check all h
 			groupCount++;
 		}
 		if (!checkDuplicates(currentTeachers)) {
-			_RPT0(0, "Timetable not feasible, Duplicate teachers in same period\n");  //prints to output
+//			_RPT0(0, "Timetable not feasible, Duplicate teachers in same period\n");  //prints to output
 			score++;
 		}
 		if (!checkDuplicates(currentRooms)) {
-			_RPT0(0, "Timetable not feasible, Duplicate rooms in same period\n");  //prints to output
+//			_RPT0(0, "Timetable not feasible, Duplicate rooms in same period\n");  //prints to output
 			score++;
 		}
 		periodCount++;
@@ -362,7 +365,7 @@ int checkTimetableV2(std::vector<Timetable> currentTimetables) {			//check all h
 			int subjectNum = std::distance(subjects.begin(), it);	// position of the subject
 			std::vector<int> currentGroupsSubjectHours = subjectHoursCheck[i];		//get the current hours taken for each subject for the current group
 			if (currentGroupsSubjectHours[j] != hoursSubject[subjectNum]) {
-				_RPT1(0, "Timetable not feasible, Not enough hours for subject %s\n", subjects[subjectNum].c_str());  //prints to output
+//				_RPT1(0, "Timetable not feasible, Not enough hours for subject %s\n", subjects[subjectNum].c_str());  //prints to output
 				score++;
 			}
 		}
@@ -375,34 +378,103 @@ int checkTimetableV2(std::vector<Timetable> currentTimetables) {			//check all h
 	int score;
 };*/
 
+timetableScore giveScore(std::vector<Timetable> scoringTimetable) {
+	timetableScore scoredTimetable;
+	scoredTimetable.setTimetable(scoringTimetable);
+	int score = ScoreTimetable(scoringTimetable) + (checkTimetableV2(scoringTimetable) * 10);	//value meeting hard constraints over soft constraints
+	scoredTimetable.setScore(score);
+	return scoredTimetable;
+}
 
 std::vector<timetableScore> createInitalPopulation(int populationSize) {
 	std::vector<timetableScore> population;
 	for (int i = 0; i < populationSize; i++) {
-		timetableScore timetableMember;
+		_RPT1(0, "population size is %d\n", i);  //prints to output
 		std::vector<Timetable> tempTimetables = GenerateV2();
-		timetableMember.setTimetable(tempTimetables);
-		int score = ScoreTimetable(tempTimetables) + (checkTimetableV2(tempTimetables) * 10);	//value meeting hard constraints over soft constraints
-		timetableMember.setScore(score);
-		population.push_back(timetableMember);
-		_RPT1(0, "Population size is %d\n", i);  //prints to output	
+		population.push_back(giveScore(tempTimetables));
 	}
 	return population;
 }
 
+void SaveTimetable(std::string name) {
+
+	std::ofstream output_file(name + "savedTimetables.txt");
+	std::ostream_iterator<std::string> output_iterator(output_file, ",");
+	for (std::vector<Timetable>::const_iterator iter = Timetables.begin(); iter != Timetables.end(); ++iter) {
+		Timetable currentTimetable = *iter;
+		std::vector<std::string> currentPeriods = currentTimetable.getPeriods();
+		std::copy(currentPeriods.begin(), currentPeriods.end(), output_iterator);
+		output_file << std::endl;
+	}
+}
+
 std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<timetableScore> population, bool initalPopCheck, int populationSize) {
 	if (initalPopCheck == 1) {
-		std::vector<timetableScore> population = createInitalPopulation(populationSize);
+		population = createInitalPopulation(populationSize);
 	}
-
+	_RPT0(0, "test\n");  //prints to output
 	int crossoverPoint = groupNames.size() / 2;
 	int remainingAfterPoint = groupNames.size() - crossoverPoint;		//MAY NOT NEED
-
+	int memberCount = 0;
+	auto engine = std::default_random_engine{};
+	
 	for (int i = 0; i < maxIterations; i++) {
-		for (int j = 0; j < populationSize; j = j + 2) {
+		_RPT1(0, "Iteration count is %d\n", i);  //prints to output
+		std::sort(population.begin(), population.end());
+		/*memberCount = 0;
+		for (std::vector<timetableScore>::const_iterator iter = population.begin(); iter != population.end(); ++iter) {
+		timetableScore test = *iter;
+		int x = test.getScore();
+		_RPT1(0, "Member %d's score is %d after breeding\n", memberCount, test);  //prints to output
+		memberCount++;
+		}
+		population.erase(population.begin() + populationSize, population.end());	//delete the extra members of the population
+		memberCount = 0;*/
+		int totalPopScore = 0;
+		memberCount = 0;
+		for (std::vector<timetableScore>::const_iterator iter = population.begin(); iter != population.end(); ++iter) {
+			timetableScore test = *iter;
+			int x = test.getScore();
+			_RPT1(0, "Member %d's score is %d after removing worst scores\n", memberCount, test);  //prints to output
+			memberCount++;
+			totalPopScore = totalPopScore + x;
+		/*	//test code
+			Timetables = test.getTimetable();
+			std::ostringstream convert1;
+			convert1 << i;
+			std::string str = convert1.str();
+			std::ostringstream convert2;
+			convert2 << memberCount;
+			std::string str2 = convert2.str();
+			SaveTimetable(str + str2 + "GAtimetable");
+			//end test code */
+		}
+		_RPT1(0, "Total populationScore is %d\n", totalPopScore);  //prints to output
+
+
+		std::vector<timetableScore> childPopulation;	//create population of children
+		//new breeding code
+		int Rnum = rand();
+		int selectionNum = (Rnum % totalPopScore);	//get a random number between 0 and total population score
+		int selectionIterator = 0;
+
+		for (std::vector<timetableScore>::const_iterator iter = population.begin(); (iter != population.end() && selectionNum > 0); ++iter) {
+			timetableScore currentTimetables = *iter;
+			int currentScore = currentTimetables.getScore();
+			selectionNum = selectionNum - currentScore;
+			selectionIterator++;
+		}
+		int selectParent1 = populationSize - selectionIterator - 1;	//as the loop with increment 1 too many times
+		_RPT1(0, "Timetable %d has been selected for breeding\n", selectParent1);  //prints to output
+
+
+		//end new breeding code
+		int populationCount = 0;
+		std::shuffle(std::begin(population), std::end(population), engine);	//mix the population up
+		for (int j = 0; j < populationSize - 1; j = j + 2) {
 			timetableScore parent1 = population[j];
 			std::vector<Timetable> parent1Timetables = parent1.getTimetable();
-			timetableScore parent2 = population[j+1];
+			timetableScore parent2 = population[j + 1];
 			std::vector<Timetable> parent2Timetables = parent2.getTimetable();
 			std::vector<Timetable> child1;
 			std::vector<Timetable> child2;
@@ -410,13 +482,21 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 				child1.push_back(parent1Timetables[k]);
 				child2.push_back(parent2Timetables[k]);
 			}
-			for (int k = crossoverPoint; k < groupNames.size; k++) {	//second half of chromosomes
+			for (int k = crossoverPoint; k < groupNames.size(); k++) {	//second half of chromosomes
 				child2.push_back(parent1Timetables[k]);
 				child1.push_back(parent2Timetables[k]);
 			}
+			childPopulation.push_back(giveScore(child1));
+			childPopulation.push_back(giveScore(child2));
+			populationCount = populationCount + 2;
 		}
+		population = childPopulation;
 	}
+	std::sort(population.begin(), population.end());
+	Timetables = population[0].getTimetable();
+	return population;
 }
+
 void DefaultValues() {
 	subjects = { "English", "Maths","Science","Art" ,"ICT","Humanities","RE","French","Music","PE","PSHE","History","A-Level Maths","Psychology","A-Level English","Sociology","Law","Physics" };	//subject names 
 		
@@ -872,17 +952,7 @@ void SaveTeachers() {
 	}
 }
 
-void SaveTimetable(std::string name) {
 
-	std::ofstream output_file(name + "savedTimetables.txt");
-	std::ostream_iterator<std::string> output_iterator(output_file, ",");
-	for (std::vector<Timetable>::const_iterator iter = Timetables.begin(); iter != Timetables.end(); ++iter) {
-		Timetable currentTimetable = *iter;
-		std::vector<std::string> currentPeriods = currentTimetable.getPeriods();
-		std::copy(currentPeriods.begin(), currentPeriods.end(), output_iterator);
-		output_file << std::endl;
-	}
-}
 
 void SaveTimetable1() {
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "timetableScore.h"
 #ifndef TIMETABLEGENERATOR_H
 #define TIMETABLEGENERATOR_H
 
@@ -14,5 +15,5 @@ void LoadTimetable();
 void SaveTeachers();
 std::vector<Timetable> GenerateV2();
 int checkTimetableV2(std::vector<Timetable> currentTimetables);
-std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<timetableScore> population, bool initalPopCheck);
+std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<timetableScore> population, bool initalPopCheck, int populationSize);
 #endif
