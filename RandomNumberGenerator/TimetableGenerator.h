@@ -16,4 +16,5 @@ void SaveTeachers();
 std::vector<Timetable> GenerateV2();
 int checkTimetableV2(std::vector<Timetable> currentTimetables);
 std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<timetableScore> population, bool initalPopCheck, int populationSize);
+void testSelector();
 #endif

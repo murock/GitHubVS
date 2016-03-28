@@ -11,4 +11,5 @@ std::vector<std::vector<std::string>> subjectsTaken; //subjects taken with respe
 std::vector<std::vector<std::string>> attachedTeachers; //store the groups with there attached teacher for each subject so every other position is a subject then the teacher so subjects are even teachers are odd
 std::vector<Timetable> Timetables;	//stores the timetables for each group
 int teacherPreference = 0;	//if 0 then pref morning if 1 then pref afternoon NEED TO IMPLEMENT ON GUI
+std::vector<int> TESTselectionNumCount;
 
