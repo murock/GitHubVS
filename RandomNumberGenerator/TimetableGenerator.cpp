@@ -433,12 +433,18 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 		population = createInitalPopulation(populationSize);
 	}
 	_RPT0(0, "test\n");  //prints to output
-	int crossoverPoint = groupNames.size() / 2;
-	int remainingAfterPoint = groupNames.size() - crossoverPoint;		//MAY NOT NEED
+//	int crossoverPoint = groupNames.size() / 2;
+
+//	int remainingAfterPoint = groupNames.size() - crossoverPoint;		//MAY NOT NEED
+
 	int memberCount = 0;
 	auto engine = std::default_random_engine{};
 
 	for (int i = 0; i < maxIterations; i++) {
+		//new crossover code
+		int Rnum = rand();
+		int crossoverPoint = (Rnum % groupNames.size() + 1);		//get a random number between 1 and total number of groups
+		_RPT1(0, "cross over point is %d\n", crossoverPoint);  //prints to output
 		_RPT1(0, "Iteration count is %d\n", i);  //prints to output
 		std::sort(population.begin(), population.end());
 		/*memberCount = 0;
@@ -473,6 +479,7 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 
 
 		std::vector<timetableScore> childPopulation;	//create population of children
+		childPopulation.push_back(population[0]);	//save best solution
 		//test code
 		std::vector<int> timetableFreq;
 		for (int testi = 0; testi < population.size(); testi++) {
