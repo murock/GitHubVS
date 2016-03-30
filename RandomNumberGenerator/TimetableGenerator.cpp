@@ -184,6 +184,11 @@ std::vector<Timetable> GenerateV2() {
 			int Rnum = rand();
 			std::vector<std::string> tempRoomNames = roomNames[subjectNum];					//get all rooms for current subject
 			int roomNum = (Rnum % tempRoomNames.size());									//get a random number between 0 and total number of rooms for current subject
+			std::vector<int> tempRoomCapacitys = roomCapacitys[subjectNum];					//get all room capacitys for that subject
+			while (tempRoomCapacitys[roomNum] < groupSizes[groupCount]) {					//while chosen rooms capacity is less than total num of students in group keep looking for new rooms
+				Rnum = rand();
+				roomNum = (Rnum % tempRoomNames.size());		//choose another room
+			}
 			//end room selection					
 
 			if (freePeriodFlag == 0) {	// assign chosen subject 
@@ -549,7 +554,10 @@ std::vector<Timetable> mutation(std::vector<Timetable>& currentTimetables, int n
 timetableScore giveScore(std::vector<Timetable>& scoringTimetable) {
 	timetableScore scoredTimetable;
 	scoredTimetable.setTimetable(scoringTimetable);
-	int score = ScoreTimetable(scoringTimetable) + (checkTimetableV2(scoringTimetable) * 10);	//value meeting hard constraints over soft constraints
+	int a = ScoreTimetable(scoringTimetable);
+	int b = checkTimetableV2(scoringTimetable);
+	int score = (a*0.1) + b;//ScoreTimetable(scoringTimetable) + (checkTimetableV2(scoringTimetable) * 4);	//value meeting hard constraints over soft constraints
+//	_RPT1(0, "%d Hard violations %d Soft violations total score is %d\n", b, a, score);  //prints to output
 	scoredTimetable.setScore(score);
 	return scoredTimetable;
 }
@@ -581,7 +589,7 @@ int selectParent(std::vector<timetableScore>& population, int totalPopScore, int
 	do  {
 		selectionIterator = 0;
 		int Rnum = rand();
-		int selectionNum = (Rnum % totalPopScore);	//get a random number between 0 and total population score
+		int selectionNum = (Rnum % totalPopScore);	//get a random number between 0 and total population score maximum score cannot exceed 32767
 //		_RPT1(0, "selectionNum is %d\n", selectionNum);  //prints to output
 		std::vector<timetableScore>::const_iterator iter = population.begin();
 		do  {
@@ -746,132 +754,164 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 	return population;
 }
 
-
-
 void DefaultValues() {
-	subjects = { "English", "Maths","Science","Art" ,"ICT","Humanities","RE","French","Music","PE","PSHE","History","A-Level Maths","Psychology","A-Level English","Sociology","Law","Physics" };	//subject names 
+	subjects = { "English", "Maths","Science","Art" ,"ICT","Humanities","RE","French","Music",
+		"PE","PSHE","History","A-Level Maths","Psychology","A-Level English","Sociology","Law","Physics" };	//subject names 
 		
 	hoursSubject = { 4,3,3,3,1,4,1,2,1,2,1,4,4,4,4,4,4,4 };		//hours taught per subject
 
 	groupNames = { "7A","7B","7C","8A","8B","8C","9A","9B","9C","12A","12B","12C","13A","13B","13C" }; //class names
+	groupSizes = {  30,  30,  30,  30,  30,  30,  30,  30, 30,   30,   30,   30,   30,   30,    30 };
 
-	std::vector<std::string> temp = { "Mr English1","Miss English2", "Dr English3" }, temp2 = { "E1","E2","E3" };
+	std::vector<std::string> temp = { "Mr English","Miss English", "Dr English" }, temp2 = { "E1","E2","E3","E4" };
 	std::vector<int> temp3 = { 12,12,12 };
-	roomNames.push_back(temp2);
+	std::vector<int> temp4 = { 30,30,30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr Maths1","Miss Maths2" };
-	temp2 = { "M1","M2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr Maths","Miss Maths" };
+	temp2 = { "M1","M2","M3" };
 	temp3 = { 15,15 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr Sci1","Miss Sci2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr Sci","Miss Sci" };
 	temp2 = { "S1","S2" };
 	temp3 = { 15,15 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr Art1","Miss Art2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr Art","Miss Art" };
 	temp2 = { "A1","A2" };
 	temp3 = { 15,15 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr ICT1","Miss ICT2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr ICT","Miss ICT" };
 	temp2 = { "IT1","IT2" };
 	temp3 = { 5,5 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr Hum1","Miss Hum2", "Dr Hum3" };
-	temp2 = { "H1","H2","H3" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr Hum","Miss Hum", "Dr Hum" };
+	temp2 = { "H1","H2","H3","H4" };
 	temp3 = { 12,12,12 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30,30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr RE1","Miss RE2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr RE","Miss RE" };
 	temp2 = { "RE1","RE2" };
 	temp3 = { 5,5 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr French1","Miss French2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr French","Miss French" };
 	temp2 = { "L1","L2" };
 	temp3 = { 10,10 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr Music1","Miss Music2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr Music","Miss Music" };
 	temp2 = { "MU1","MU2" };
 	temp3 = { 5,5 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr PE1","Miss PE2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr PE","Miss PE" };
 	temp2 = { "Playground","Field" };
 	temp3 = { 10,10 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr PSHE1","Miss PSHE2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr PSHE","Miss PSHE" };
 	temp2 = { "PS1","PS2" };
 	temp3 = { 5,5 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-
-	temp = { "Mr Hist1","Miss Hist2" };
-	temp2 = { "Hi1","Hi2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr Hum","Miss Hum" };
+	temp2 = { "H1","H2","H3","H4" };
 	temp3 = { 8,4 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30,30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr AMaths1","Miss AMaths2" };
-	temp2 = { "AM1","AM2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Dr Maths","Mr Maths" };
+	temp2 = { "M1","M2","M3" };
 	temp3 = { 8,4 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30 ,30};
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr Psy1","Miss Psy2" };
-	temp2 = { "Psy1","Psy2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr Psy","Miss Psy" };
+	temp2 = { "H1","H2","H3","H4" };
 	temp3 = { 8,4 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30,30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr AEnglish","Miss AEnglish2" };
-	temp2 = { "AE1","AE2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr English","Miss English" };
+	temp2 = { "E1","E2","E3","E4" };
 	temp3 = { 8,4 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30,30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr Soc1","Miss Soc2" };
-	temp2 = { "SOC1","SOC2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr Soc","Miss Soc" };
+	temp2 = { "H1","H2","H3","H4" };
 	temp3 = { 8,4 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30,30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr Law1","Miss Law2" };
-	temp2 = { "LW1","LW2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Mr Law","Miss Law" };
+	temp2 = { "E1","E2","E3","E4"};
 	temp3 = { 8,4 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30,30,30 };
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-	temp = { "Mr Phy1","Miss Phy2" };
-	temp2 = { "Phy1","Phy2" };
+	roomCapacitys.push_back(temp4);
+	temp = { "Dr Sci","Miss Sci" };
+	temp2 = { "S1","S2" ,"S4"};
 	temp3 = { 8,4 };
-	roomNames.push_back(temp2);
+	temp4 = { 30,30 ,30};
 	teacherNames.push_back(temp);
+	roomNames.push_back(temp2);
 	teacherHours.push_back(temp3);
-
-
-
-
+	roomCapacitys.push_back(temp4);
 
 	for (int i = 0; i < 9; i++) {			//fill in the subjects for the years 7-9
 		temp = { "English", "Maths","Science","Art" ,"ICT","Humanities","RE","French","Music","PE","PSHE" };
 		subjectsTaken.push_back(temp);
 	}
+
 
 	temp = { "Physics","A-Level Maths","Psychology","History" };
 	subjectsTaken.push_back(temp);
@@ -880,17 +920,14 @@ void DefaultValues() {
 	temp = { "History","A-Level Maths","Sociology","A-Level English" };
 	subjectsTaken.push_back(temp);
 
+
 	temp = { "History","A-Level Maths","Psychology" };
 	subjectsTaken.push_back(temp);
 	temp = { "A-Level English","Sociology","Law" };
 	subjectsTaken.push_back(temp);
 	temp = { "Physics","Law","Sociology" };
 	subjectsTaken.push_back(temp);
-
-
 }
-
-
 //test code
 int selectParentTest(std::vector<int> population, int totalPopScore, int previousIterator) {
 	int selectionIterator = 0;
@@ -914,7 +951,6 @@ int selectParentTest(std::vector<int> population, int totalPopScore, int previou
 	TESTselectionNumCount[selectionNumOri]++;
 	return selectionIterator - 1; //as the loop increments 1 too many times
 }
-
 int NumberPicked(std::vector<int> population, int totalPopScore, int previousIterator, int selectionNum) {
 	int selectionIterator = 0;
 	do {
@@ -985,10 +1021,7 @@ void testSelector() {
 		}
 	}
 // test code
-
-
 //OLD CODE
-
 std::vector<std::string> AssignTimetable(int periodCount, std::vector<std::vector<std::string>> periodsArray, int groupCount, int subjectNum, std::vector<std::string> currentGroupsTeachers, int teacherPosition, std::vector<std::string> tempRoomNames, int roomNum) {
 	std::vector<std::string> periods = periodsArray[groupCount];	//create periods vector from the periods array
 	if (currentGroupsTeachers[teacherPosition] == "FreeTeacher") {
@@ -1163,8 +1196,6 @@ void Generate() {
 								//	_RPT1(0, "Period Count is %d\n", periodCount);  //prints to output
 	}
 }
-
-
 bool checkTimetable() {			//check all hours scheduled not too little or too many no double bookings of rooms/teachers/groups, returns 1 if not feasible
 
 	std::vector<std::vector<int>> subjectHoursCheck;				// with subjects ordered how they were first typed in
@@ -1297,9 +1328,6 @@ void SaveTeachers() {
 		output_file << std::endl;
 	}
 }
-
-
-
 void SaveTimetable1() {
 
 	std::ofstream output_file("savedTimetables.txt");
@@ -1311,17 +1339,53 @@ void SaveTimetable1() {
 		output_file << std::endl;
 	}
 }
+void LoadConfig() {
+	std::ifstream infile("config.txt");
+	int hashCount = 0;
+	for (int i = 0; infile; i++) {
+		std::vector<std::string> vectorString;
+		std::vector<int> vectorInt;
+		std::string s;
+		if (!getline(infile, s)) break;
+		if (s[0] == '#') {
+			_RPT1(0, "Ignoring line %d as its a #\n", i);  //prints to output
+			hashCount++;
+		}
+		else if (s[0] == '0' || '1' || '2' || '3' || '4' || '5' || '6' || '7' || '8' || '9'){
+			std::istringstream ss(s);
+			while (ss)
+			{
+				std::string s;
+				if (!getline(ss, s, ',')) break;
+				int tempNum;
+				std::istringstream convert(s);
+				convert >> tempNum;		//make the string an int
+				vectorInt.push_back(tempNum);
+			}
+			subjects = vectorString;
+		}else{
+			std::istringstream ss(s);
+			while (ss)
+			{
+				std::string s;
+				if (!getline(ss, s, ',')) break;
+				vectorString.push_back(s);
+			}
+		}
+		if (hashCount == 1)
+			subjects = vectorString;
 
+	}
+
+
+}
 void LoadTimetable() {
-
 	for (std::vector<std::string>::const_iterator iter = groupNames.begin(); iter != groupNames.end(); ++iter) {
 		Timetable currentTimetable;
 		currentTimetable.setGroup(*iter);	//give the group name to the timetable object
 		Timetables.push_back(currentTimetable);	//save timetable to global timetables vector
 	}
-
 	std::ifstream infile("orginalsavedTimetables.txt");
-
 	for (int i = 0; infile; i++)
 	{
 		std::string s;
@@ -1337,11 +1401,7 @@ void LoadTimetable() {
 		Timetable currentTimetable = Timetables[i];	//get the current timetable
 		currentTimetable.setPeriods(periods); //give the periods information to the timetable object
 		Timetables[i] = currentTimetable;	//save to global timetable vector
-											//data.push_back(periods);
 	}
-
-
-
 }
 
 /*

@@ -435,9 +435,9 @@ private: System::Void defaultButton_Click(System::Object^  sender, System::Event
 	ClearGlobals();
 	DefaultValues();
 	AttachTeachertoGroup();
-	populationGlobal = optimiseTimetable(400, populationGlobal, 1, 50, 2);
+	populationGlobal = optimiseTimetable(3, populationGlobal, 1, 25, 2);
 	//testSelector();
-
+	//Timetables = GenerateV2();
 
 /*
 	std::vector<Timetable> testTimetable = GenerateV2();
