@@ -435,8 +435,7 @@ private: System::Void defaultButton_Click(System::Object^  sender, System::Event
 	ClearGlobals();
 	DefaultValues();
 	AttachTeachertoGroup();
-	std::vector<timetableScore> population;
-	population = optimiseTimetable(50, population, 1, 15);
+	populationGlobal = optimiseTimetable(400, populationGlobal, 1, 50, 2);
 	//testSelector();
 
 
@@ -455,9 +454,10 @@ private: System::Void defaultButton_Click(System::Object^  sender, System::Event
 	form->ShowDialog();
 }
 private: System::Void preconButton_Click(System::Object^  sender, System::EventArgs^  e) {
-	ClearGlobals();
+	populationGlobal = optimiseTimetable(20, populationGlobal, 0, 50, 2);
+/*	ClearGlobals();
 	DefaultValues();
-	LoadTimetable();
+	LoadTimetable();*/
 	TimetableViewer ^ form = gcnew TimetableViewer;
 	form->ShowDialog();
 }

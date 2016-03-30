@@ -5,7 +5,8 @@
 #include <sstream>
 #include <msclr/marshal_cppstd.h>
 #include "Timetable.h"
-//#include <algorithm>    // std::find
+#include "timetableScore.h"
+#include <algorithm>    // std::find
 #ifndef MYLIB_H
 #define MYLIB_H
 extern std::vector<std::string> subjects;
@@ -19,4 +20,5 @@ extern std::vector<std::vector<std::string>> attachedTeachers; //store the group
 extern std::vector<Timetable> Timetables;	//stores the timetables for each group
 extern int teacherPreference;	//if 0 then pref morning if 1 then pref afternoon
 extern std::vector<int> TESTselectionNumCount;
+extern std::vector<timetableScore> populationGlobal;
 #endif

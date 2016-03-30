@@ -12,4 +12,5 @@ std::vector<std::vector<std::string>> attachedTeachers; //store the groups with 
 std::vector<Timetable> Timetables;	//stores the timetables for each group
 int teacherPreference = 0;	//if 0 then pref morning if 1 then pref afternoon NEED TO IMPLEMENT ON GUI
 std::vector<int> TESTselectionNumCount;
+std::vector<timetableScore> populationGlobal;
 

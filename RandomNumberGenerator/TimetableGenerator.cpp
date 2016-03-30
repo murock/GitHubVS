@@ -69,7 +69,7 @@ struct periodsStruct
 	std::vector<int> allocatedPeriods;
 };
 
-periodsStruct AssignTimetableV2(std::vector<int> allocatedPeriods, int totalHours, int periodCount, std::vector<std::vector<std::string>> periodsArray, int groupCount, int subjectNum, std::vector<std::string> currentGroupsTeachers, int teacherPosition, std::vector<std::string> tempRoomNames, int roomNum) {
+periodsStruct AssignTimetableV2(std::vector<int>& allocatedPeriods, int totalHours, int periodCount, std::vector<std::vector<std::string>>& periodsArray, int groupCount, int subjectNum, std::vector<std::string>& currentGroupsTeachers, int teacherPosition, std::vector<std::string>& tempRoomNames, int roomNum) {
 	std::vector<std::string> periods = periodsArray[groupCount];	//create periods vector from the periods array
 	int Rnum = rand();
 	int periodNum = (Rnum % totalHours);	//get a random Number between 0 and total timetabled hours
@@ -100,7 +100,7 @@ periodsStruct AssignTimetableV2(std::vector<int> allocatedPeriods, int totalHour
 	return returnPeriods;
 }
 
-int checkMaxHoursReachedV2(std::vector<int> tempHoursPerSubjectGroup, int groupCount) {	//check if the max hours have been reached for every subject for this group
+int checkMaxHoursReachedV2(std::vector<int>& tempHoursPerSubjectGroup, int groupCount) {	//check if the max hours have been reached for every subject for this group
 	std::vector<std::string> subjectsTakenByGroup = subjectsTaken[groupCount];	//get the subjects taken by the group
 	std::vector<int> availableSubjects;
 
@@ -216,7 +216,7 @@ std::vector<Timetable> GenerateV2() {
 	return timetableChromosome;
 }
 
-bool checkDuplicates(std::vector<std::string> vec)
+bool checkDuplicates(std::vector<std::string>& vec)
 {
 	std::sort(vec.begin(), vec.end());
 	return std::unique(vec.begin(), vec.end()) == vec.end();
@@ -234,7 +234,7 @@ int sumSubjectHours(int groupNum) {
 	return totalHours;
 }
 
-int ScoreTimetable(std::vector<Timetable> currentTimetables) {		//lower score is better
+int ScoreTimetable(std::vector<Timetable>& currentTimetables) {		//lower score is better
 	int totalHours = 25;		//total hours in the timetable
 	int lunchPeriod = 4;		//the period after lunch
 	int totalScore = 0;
@@ -302,7 +302,7 @@ int ScoreTimetable(std::vector<Timetable> currentTimetables) {		//lower score is
 	return totalScore;
 }
 
-int checkTimetableV2(std::vector<Timetable> currentTimetables) {			//check all hours scheduled not too little or too many, no double bookings of rooms/teachers/groups, returns a score 0 if feasible
+int checkTimetableV2(std::vector<Timetable>& currentTimetables) {			//check all hours scheduled not too little or too many, no double bookings of rooms/teachers/groups, returns a score 0 if feasible
 	std::vector<std::vector<int>> subjectHoursCheck;				// with subjects ordered how they were first typed in																//make the subjectHoursCheck vector the correct size
 	for (int i = 0; i < groupNames.size(); i++) {		//iterates through the groupNames vector
 		std::vector<int> temp;
@@ -346,14 +346,41 @@ int checkTimetableV2(std::vector<Timetable> currentTimetables) {			//check all h
 			}
 			groupCount++;
 		}
-		if (!checkDuplicates(currentTeachers)) {
+
+		//new duplicate code
+		for (int duplicateSelect = 0; duplicateSelect < 2; duplicateSelect++) {
+			std::vector<std::string> duplicateCheck;
+			if (duplicateSelect == 0) {
+				duplicateCheck = currentTeachers;
+			}
+			else if (duplicateSelect == 1)
+				duplicateCheck = currentRooms;
+			//duplicate teacher/room clash
+			for (int i = 0; i < duplicateCheck.size(); i++) {
+				int jPlus = i + 1;
+				for (int j = jPlus; j < duplicateCheck.size(); j++) {
+					if (duplicateCheck[i] == duplicateCheck[j]) {
+					//	_RPT0(0, "Timetable not feasible, Duplicate teacher/room in same period\n");  //prints to output
+						score++;
+					}
+				}
+			}
+		}
+		
+		//end new duplicate code
+
+
+
+
+
+		/*	if (!checkDuplicates(currentTeachers)) {
 //			_RPT0(0, "Timetable not feasible, Duplicate teachers in same period\n");  //prints to output
 			score++;
 		}
 		if (!checkDuplicates(currentRooms)) {
 //			_RPT0(0, "Timetable not feasible, Duplicate rooms in same period\n");  //prints to output
 			score++;
-		}
+		}*/
 		periodCount++;
 	}
 	for (int i = 0; i < groupNames.size(); i++) {		//iterates through the groups vector
@@ -378,7 +405,148 @@ int checkTimetableV2(std::vector<Timetable> currentTimetables) {			//check all h
 	int score;
 };*/
 
-timetableScore giveScore(std::vector<Timetable> scoringTimetable) {
+std::vector<Timetable> randomMutation(std::vector<Timetable>& currentTimetables,int numMutation) {
+	for (int i = 0; i < numMutation; i++) {
+		int Rnum = rand();
+		int groupToSwap = (Rnum % groupNames.size());	//get a random number 0 the total number of groups
+		Timetable currentTimetable = currentTimetables[groupToSwap];
+		std::vector<std::string> periods = currentTimetable.getPeriods();	//get the period information for that group
+		int totalHours = (periods.size() / 3);
+		int period1ToSwap = (Rnum % totalHours);	//get a random number 0 the total hours in timetable
+		Rnum = rand();
+		int period2ToSwap = (Rnum % totalHours);	//get a random number 0 the total hours in timetable
+		//get period info
+		//_RPT1(0, "Swapping period %d with period %d for group %s\n", period2ToSwap, period1ToSwap, groupNames[groupToSwap].c_str());  //prints to output
+
+		std::string currentTeacher1 = periods[(period1ToSwap * 3 + 1)];		//get current teacher for that period
+		std::string currentRoom1 = periods[(period1ToSwap * 3 + 2)];		//get current room for that period
+		std::string subject1 = periods[period1ToSwap * 3];			//get current subject
+		std::string currentTeacher2 = periods[(period2ToSwap * 3 + 1)];		//get current teacher for that period
+		std::string currentRoom2 = periods[(period2ToSwap * 3 + 2)];		//get current room for that period
+		std::string subject2 = periods[period2ToSwap * 3];			//get current subject
+																	//	_RPT1(0, " with period %s %s %s\n", subject2.c_str(), currentTeacher2.c_str(), currentRoom2.c_str());  //prints to output
+																	//swap period info
+		periods[(period1ToSwap * 3 + 1)] = currentTeacher2;
+		periods[(period1ToSwap * 3 + 2)] = currentRoom2;
+		periods[(period1ToSwap * 3)] = subject2;
+		periods[(period2ToSwap * 3 + 1)] = currentTeacher1;
+		periods[(period2ToSwap * 3 + 2)] = currentRoom1;
+		periods[(period2ToSwap * 3)] = subject1;
+		currentTimetable.setPeriods(periods);
+		currentTimetables[groupToSwap] = currentTimetable;
+	}
+	return currentTimetables;
+}
+
+std::vector<Timetable> mutation(std::vector<Timetable>& currentTimetables, int numMutation) {
+	int Rnum = rand();
+	int duplicateSelect = (Rnum % 2);	//get a random number 0 or 1
+	std::vector<std::vector<int>> subjectHoursCheck;				// with subjects ordered how they were first typed in																//make the subjectHoursCheck vector the correct size
+	for (int i = 0; i < groupNames.size(); i++) {		//iterates through the groupNames vector
+		std::vector<int> temp;
+		std::vector<std::string> subjectsTakenCurrentGroup = subjectsTaken[i];	//get the subjects taken by the current group
+		for (int j = 0; j < subjectsTakenCurrentGroup.size(); j++) {	//iterate through subjects taken by current group vector
+			temp.push_back(0);			//fill in 0's for as many subjects as the group has
+		}
+		subjectHoursCheck.push_back(temp);
+	}
+	int totalHours = 25;
+	int periodCount = 0;
+	int period1ToSwap = totalHours;	//1 more than the highest possible vector of periods
+	int period2ToSwap = totalHours;
+	int foundSwapCount = 0;
+
+	while ((periodCount < totalHours)&&(foundSwapCount < numMutation)) {		//while there are still unchecked periods and no 2 periods have been found to swap
+		std::vector<std::string> currentTeachers;		//stores current teachers for that period
+		std::vector<std::string> currentRooms;			//store current rooms for that period
+		int groupCount = 0;
+		for (std::vector<Timetable>::const_iterator iter = currentTimetables.begin(); iter != currentTimetables.end(); ++iter) {			//iterate through currentTimetables vector
+			Timetable currentTimetable = *iter;	//select the current timetable
+			std::vector<std::string> periods = currentTimetable.getPeriods();	//get the period information for that group
+			std::string currentTeacher = periods[(periodCount * 3 + 1)];		//get current teacher for that period
+			std::string currentRoom = periods[(periodCount * 3 + 2)];		//get current room for that period
+			std::string subject = periods[periodCount * 3];			//get current subject
+			std::string freeCheck = "Free";
+			if (subject != freeCheck) {		// if its not a free period then check the subject hours 
+			//	_RPT1(0, "Current teachers added %s  \n", currentTeacher.c_str());  //prints to output
+				currentTeachers.push_back(currentTeacher);
+				currentRooms.push_back(currentRoom);
+			}
+			else {
+				std::string groupCountAsString;
+				std::ostringstream convert;
+				convert << groupCount;
+				groupCountAsString = convert.str();
+			//	_RPT1(0, "Current teachers added in free %s  \n", currentTeacher.c_str());  //prints to output
+				currentTeachers.push_back(groupCountAsString);	//save the group count to current teachers
+				currentRooms.push_back(groupCountAsString);		//save the group count to current rooms
+			}
+			groupCount++;
+		}
+		
+		std::vector<std::string> duplicateCheck;
+		if (duplicateSelect == 0) {
+			duplicateCheck = currentTeachers;
+		}
+		else if (duplicateSelect == 1)
+			duplicateCheck = currentRooms;
+
+		//duplicate teacher/room clash
+		for (int i = 0; i < duplicateCheck.size(); i++) {
+			int jPlus = i + 1;
+			for (int j = jPlus; j < duplicateCheck.size(); j++) {
+				if (duplicateCheck[i] == duplicateCheck[j]) {
+					//		_RPT1(0, "Teacher for group %s matches teacher for group %s in period %d\n", groupNames[i].c_str(), groupNames[j].c_str(), periodCount);  //prints to output
+					int groupToSwap, groupSwapCheck;
+					groupSwapCheck = i;
+					if (period1ToSwap == totalHours) {
+						period1ToSwap = periodCount;		//save period to swap
+						groupToSwap = i;			//save groupNum of class with clash
+					}
+					else if ((period2ToSwap == totalHours) && (groupToSwap == groupSwapCheck) && (periodCount != period1ToSwap)) {	//if period2ToSwap not yet allocated and the new group with clash matches old group with clash and the 2 periods to swap aren't the same
+						period2ToSwap = periodCount;;
+						_RPT1(0, "Swapping period %d with period %d for group %s\n", period2ToSwap, period1ToSwap, groupNames[groupToSwap].c_str());  //prints to output
+						foundSwapCount++;
+						Timetable currentTimetable = currentTimetables[groupToSwap];
+						//get period info
+						std::vector<std::string> periods = currentTimetable.getPeriods();	//get the period information for that group
+						std::string currentTeacher1 = periods[(period1ToSwap * 3 + 1)];		//get current teacher for that period
+						std::string currentRoom1 = periods[(period1ToSwap * 3 + 2)];		//get current room for that period
+						std::string subject1 = periods[period1ToSwap * 3];			//get current subject
+						std::string currentTeacher2 = periods[(period2ToSwap * 3 + 1)];		//get current teacher for that period
+						std::string currentRoom2 = periods[(period2ToSwap * 3 + 2)];		//get current room for that period
+						std::string subject2 = periods[period2ToSwap * 3];			//get current subject
+																					//		_RPT1(0, "Swapping period %s %s %s",  subject1.c_str(), currentTeacher1.c_str(), currentRoom1.c_str());  //prints to output
+																					//	_RPT1(0, " with period %s %s %s\n", subject2.c_str(), currentTeacher2.c_str(), currentRoom2.c_str());  //prints to output
+																					//swap period info
+						periods[(period1ToSwap * 3 + 1)] = currentTeacher2;
+						periods[(period1ToSwap * 3 + 2)] = currentRoom2;
+						periods[(period1ToSwap * 3)] = subject2;
+						periods[(period2ToSwap * 3 + 1)] = currentTeacher1;
+						periods[(period2ToSwap * 3 + 2)] = currentRoom1;
+						periods[(period2ToSwap * 3)] = subject1;
+						currentTimetable.setPeriods(periods);
+						currentTimetables[groupToSwap] = currentTimetable;
+					}
+				}
+			}
+		}
+
+
+	/*	if (!checkDuplicates(currentRooms)) {
+			//	_RPT0(0, "Timetable not feasible, Duplicate rooms in same period\n");  //prints to output
+
+		}*/
+
+			periodCount++;
+
+			int period1ToSwap = totalHours;	//reset period1toswap ready for next period
+
+	}
+	return currentTimetables;
+}
+
+timetableScore giveScore(std::vector<Timetable>& scoringTimetable) {
 	timetableScore scoredTimetable;
 	scoredTimetable.setTimetable(scoringTimetable);
 	int score = ScoreTimetable(scoringTimetable) + (checkTimetableV2(scoringTimetable) * 10);	//value meeting hard constraints over soft constraints
@@ -408,7 +576,7 @@ void SaveTimetable(std::string name) {
 	}
 }
 
-int selectParent(std::vector<timetableScore> population, int totalPopScore, int previousIterator) {
+int selectParent(std::vector<timetableScore>& population, int totalPopScore, int previousIterator) {
 	int selectionIterator = 0;
 	do  {
 		selectionIterator = 0;
@@ -428,13 +596,15 @@ int selectParent(std::vector<timetableScore> population, int totalPopScore, int 
 	return selectionIterator - 1; //as the loop increments 1 too many times
 }
 
-std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<timetableScore> population, bool initalPopCheck, int populationSize) {
+std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<timetableScore>& population, bool initalPopCheck, int populationSize, int elitismNum) {
 	if (initalPopCheck == 1) {
 		population = createInitalPopulation(populationSize);
 	}
 	_RPT0(0, "test\n");  //prints to output
 //	int crossoverPoint = groupNames.size() / 2;
 
+	std::ofstream totalscore_file("totalscores.txt");	//for use in graphs DELETE LATER
+	std::ofstream bestscore_file("bestscores.txt");	//for use in graphs DELETE LATER
 //	int remainingAfterPoint = groupNames.size() - crossoverPoint;		//MAY NOT NEED
 
 	int memberCount = 0;
@@ -442,9 +612,7 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 
 	for (int i = 0; i < maxIterations; i++) {
 		//new crossover code
-		int Rnum = rand();
-		int crossoverPoint = (Rnum % groupNames.size() + 1);		//get a random number between 1 and total number of groups
-		_RPT1(0, "cross over point is %d\n", crossoverPoint);  //prints to output
+
 		_RPT1(0, "Iteration count is %d\n", i);  //prints to output
 		std::sort(population.begin(), population.end());
 		/*memberCount = 0;
@@ -476,10 +644,17 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 				//end test code */
 		}
 		_RPT1(0, "Total populationScore is %d\n", totalPopScore);  //prints to output
+		totalscore_file << totalPopScore;
+		totalscore_file << std::endl;
+		bestscore_file << population[0].getScore();
+		bestscore_file << std::endl;
+
 
 
 		std::vector<timetableScore> childPopulation;	//create population of children
-		childPopulation.push_back(population[0]);	//save best solution
+		for (int i = 0; i < elitismNum; i++) {
+			childPopulation.push_back(population[i]);	//save best solution
+		}
 		//test code
 		std::vector<int> timetableFreq;
 		for (int testi = 0; testi < population.size(); testi++) {
@@ -490,7 +665,8 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 
 
 		//new breeding code
-		while (childPopulation.size() < population.size()) {
+		while (childPopulation.size() < population.size()*2) {
+//			_RPT1(0, "child pop is %d\n", childPopulation.size());
 			int parent1Iterator = selectParent(population, totalPopScore, population.size() + 2);
 		//	_RPT1(0, "parent 1 iterator is %d\n", parent1Iterator);  //prints to output
 			int selectParent1 = populationSize - parent1Iterator - 1;		//population size - iterator as a lower score is better 
@@ -508,6 +684,10 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 			std::vector<Timetable> child1;
 			std::vector<Timetable> child2;
 
+			int Rnum = rand();
+			int crossoverPoint = (Rnum % groupNames.size() + 1);		//get a random number between 1 and total number of groups
+		//	_RPT1(0, "cross over point is %d\n", crossoverPoint);  //prints to output
+
 			for (int k = 0; k < crossoverPoint; k++) {		//first half of the chromosomes
 				child1.push_back(parent1Timetables[k]);
 				child2.push_back(parent2Timetables[k]);
@@ -516,17 +696,21 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 				child2.push_back(parent1Timetables[k]);
 				child1.push_back(parent2Timetables[k]);
 			}
+			int numMutation = (Rnum % 10 + 1);		//get a random number between 1 and maximum number of mutations
+			child1 = randomMutation(child1,numMutation);
+			Rnum = rand();
+			numMutation = (Rnum % 10 + 1);		//get a random number between 1 and maximum number of mutations
+			child2 = randomMutation(child2,numMutation);
 			childPopulation.push_back(giveScore(child1));
 			childPopulation.push_back(giveScore(child2));
-			int c = childPopulation.size();
-		//	_RPT1(0, "child population size is %d\n", c);  //prints to output
+
 		}
 		population = childPopulation;
 		//test code
 		int b = 0;
 		for (std::vector<int>::const_iterator iter2 = timetableFreq.begin(); iter2 != timetableFreq.end(); ++iter2) {
 			int a = *iter2;
-		//	_RPT1(0, "timetable %d has been selected %d times\n", b, a);  //prints to output
+			_RPT1(0, "timetable %d has been selected %d times\n", b, a);  //prints to output
 			b++;
 		}
 		//test code end
@@ -561,6 +745,8 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 	Timetables = population[0].getTimetable();
 	return population;
 }
+
+
 
 void DefaultValues() {
 	subjects = { "English", "Maths","Science","Art" ,"ICT","Humanities","RE","French","Music","PE","PSHE","History","A-Level Maths","Psychology","A-Level English","Sociology","Law","Physics" };	//subject names 
@@ -1134,7 +1320,7 @@ void LoadTimetable() {
 		Timetables.push_back(currentTimetable);	//save timetable to global timetables vector
 	}
 
-	std::ifstream infile("savedTimetables.txt");
+	std::ifstream infile("orginalsavedTimetables.txt");
 
 	for (int i = 0; infile; i++)
 	{
