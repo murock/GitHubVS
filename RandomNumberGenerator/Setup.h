@@ -433,9 +433,13 @@ private: System::Void defaultButton_Click(System::Object^  sender, System::Event
 
 
 	ClearGlobals();
-	DefaultValues();
+	//DefaultValues();
+	LoadConfig();
+	_RPT0(0, "attach\n");  //prints to output
 	AttachTeachertoGroup();
+	_RPT0(0, "optimise\n");  //prints to output
 	populationGlobal = optimiseTimetable(3, populationGlobal, 1, 25, 2);
+	_RPT0(0, "finish optimise\n");  //prints to output
 	//testSelector();
 	//Timetables = GenerateV2();
 
