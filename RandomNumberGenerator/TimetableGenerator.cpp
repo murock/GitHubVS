@@ -35,29 +35,39 @@ void AttachTeachertoGroup() {
 	}
 	for (int groupCount = 0; groupCount < groupNames.size(); groupCount++) {
 		std::vector<std::string> subjectsTakenByCurrentGroup = subjectsTaken[groupCount]; //gets the subjects taken by the current group
+		for (std::vector<std::string>::const_iterator iter = subjectsTakenByCurrentGroup.begin(); iter != subjectsTakenByCurrentGroup.end(); ++iter) {
+			std::string str = *iter;
+		//	_RPT1(0, "subjects taken are %s \n", str.c_str());  //prints to output
+		}
 		std::vector<std::string> teachersForGroup;
+	//	_RPT1(0, "groupCount is %d\n", groupCount);  //prints to output
 		for (int subjectCount = 0; subjectCount < subjectsTakenByCurrentGroup.size(); subjectCount++) {
 			std::vector<std::string>::iterator it;
 			it = find(subjects.begin(), subjects.end(), subjectsTakenByCurrentGroup[subjectCount]);
 			int position = std::distance(subjects.begin(), it);
+		//	_RPT1(0, "subject looked for is  %s\n", subjectsTakenByCurrentGroup[subjectCount].c_str());  //prints to output
+		//	_RPT1(0, "position is %d teachernames size is %d\n", position,teacherNames.size());  //prints to output
 			std::vector<std::string> tempTeachers = teacherNames[position];		//get all the teachers for the current subject 
-			_RPT1(0, "test before position is %d\n", position);  //prints to output
+	//		_RPT0(0, "after\n");  //prints to output
+		//	_RPT1(0, "test before position is %d\n", position);  //prints to output
 			std::vector<int> tempHours = currentTeacherHours[position];			//get the current hours being taught by teacher
 			std::vector<int> tempTeacherHours = teacherHours[position];			//get the maximum hours that can be taught by the subject teachers
-			_RPT0(0, "test\n");  //prints to output
+		//	_RPT0(0, "test\n");  //prints to output
 			int Rnum = rand();														//generate random No
-			_RPT1(0, "temp teachers size is %d\n", tempTeachers.size());  //prints to output
+		//	_RPT1(0, "temp teachers size is %d\n", tempTeachers.size());  //prints to output
 			int teacherNum = (Rnum % tempTeachers.size());							//random number between 0 and number of teachers for current subject
-			_RPT0(0, "test3\n");  //prints to output
-			_RPT1(0, "teacherNum is %d tempteacherhours size is %d\n", teacherNum,tempTeacherHours.size());  //prints to output
+		//	_RPT0(0, "test3\n");  //prints to output
+		//	_RPT1(0, "teacherNum is %d tempteacherhours size is %d\n", teacherNum,tempTeacherHours.size());  //prints to output
 			tempHours[teacherNum] = tempHours[teacherNum] + hoursSubject[position];	//add the chosen subjects teacher hours to the tempHours being taught by the teacher
-			_RPT1(0, "subject is %s tempHours is %d tempteacherHours is %d\n", subjects[position].c_str(),tempHours[teacherNum], tempTeacherHours[teacherNum]);  //prints to output
+		//	_RPT1(0, "subject is %s tempHours is %d tempteacherHours is %d\n", subjects[position].c_str(),tempHours[teacherNum], tempTeacherHours[teacherNum]);  //prints to output
+		//	_RPT0(0, "before\n");  //prints to output
 			while (tempHours[teacherNum] > tempTeacherHours[teacherNum]){
 				tempHours[teacherNum] = tempHours[teacherNum] - hoursSubject[position];	//subtract the chosen subjects teacher hours from the tempHours being taught by the teacher
 				Rnum = rand();
 				teacherNum = (Rnum % tempTeachers.size());	//get another teacher
 				tempHours[teacherNum] = tempHours[teacherNum] + hoursSubject[position];
 			}
+		//	_RPT0(0, "after\n");  //prints to output
 			currentTeacherHours[position] = tempHours;
 			teachersForGroup.push_back(subjectsTakenByCurrentGroup[subjectCount]);	//put the subject taken by current group into this groups vector
 			teachersForGroup.push_back(tempTeachers[teacherNum]);					//put a random teacher who teachers the subject into the teachers for this groups vector
@@ -1358,108 +1368,113 @@ void LoadConfig() {
 	//		_RPT1(0, "Ignoring line %d as its a #\n", i);  //prints to output
 			hashCount++;
 		}
-		else if ((readLineCount % 2 != 0) && (hashCount < 6)){		//if line count is odd and hashcount is 5 or below read ints
-			std::istringstream ss(s);
-			while (ss)
-			{
-				std::string s;
-				if (!getline(ss, s, ',')) break;
-				int tempNum;
-				std::istringstream convert(s);
-				convert >> tempNum;		//make the string an int
-				vectorInt.push_back(tempNum);
+		else {
+			if ((readLineCount % 2 != 0) && (hashCount < 6)) {		//if line count is odd and hashcount is 5 or below read ints
+				std::istringstream ss(s);
+				while (ss)
+				{
+					std::string s;
+					if (!getline(ss, s, ',')) break;
+					int tempNum;
+					std::istringstream convert(s);
+					convert >> tempNum;		//make the string an int
+					vectorInt.push_back(tempNum);
+				}
+				readLineCount++;
 			}
-			readLineCount++;
-		}else{					// if line count is even read strings
-			std::istringstream ss(s);
-			while (ss)
-			{
-		//		_RPT0(0, "got in here\n");  //prints to output
-				std::string s;
-				if (!getline(ss, s, ',')) break;
-				vectorString.push_back(s);
-		//		_RPT1(0, "string is %s\n", s.c_str());  //prints to output
+			else {					// if line count is even read strings
+				std::istringstream ss(s);
+				while (ss)
+				{
+					//		_RPT0(0, "got in here\n");  //prints to output
+					std::string s;
+					if (!getline(ss, s, ',')) break;
+					vectorString.push_back(s);
+					//		_RPT1(0, "string is %s\n", s.c_str());  //prints to output
+				}
+				readLineCount++;
 			}
-			readLineCount++;
-		}
-		if (hashCount == 1) {
-			subjects = vectorString;
-			for (std::vector<std::string>::const_iterator iter = subjects.begin(); iter != subjects.end(); ++iter) {
-				std::string str = *iter;
-				_RPT1(0, "subject added %s \n", str.c_str());  //prints to output
+			if (hashCount == 1) {
+				subjects = vectorString;
+				for (std::vector<std::string>::const_iterator iter = subjects.begin(); iter != subjects.end(); ++iter) {
+					std::string str = *iter;
+					_RPT1(0, "subject added %s \n", str.c_str());  //prints to output
+				}
 			}
-		}
-		else if (hashCount == 2) {
-			hoursSubject = vectorInt;
-			for (std::vector<int>::const_iterator iter = vectorInt.begin(); iter != vectorInt.end(); ++iter) {
-				int str = *iter;
-				_RPT1(0, "hours added is %d \n", str);  //prints to output
+			else if (hashCount == 2) {
+				hoursSubject = vectorInt;
+				for (std::vector<int>::const_iterator iter = vectorInt.begin(); iter != vectorInt.end(); ++iter) {
+					int str = *iter;
+					_RPT1(0, "hours added is %d \n", str);  //prints to output
+				}
 			}
-		}
-		else if (hashCount == 3) {
-			groupNames = vectorString;
-			for (std::vector<std::string>::const_iterator iter = vectorString.begin(); iter != vectorString.end(); ++iter) {
-				std::string str = *iter;
-				_RPT1(0, "groupname added is %s \n", str.c_str());  //prints to output
+			else if (hashCount == 3) {
+				groupNames = vectorString;
+				for (std::vector<std::string>::const_iterator iter = vectorString.begin(); iter != vectorString.end(); ++iter) {
+					std::string str = *iter;
+					_RPT1(0, "groupname added is %s \n", str.c_str());  //prints to output
+				}
 			}
-		}
-		else if (hashCount == 4){
-			groupSizes = vectorInt;
-		for (std::vector<int>::const_iterator iter = vectorInt.begin(); iter != vectorInt.end(); ++iter) {
-			int str = *iter;
-			_RPT1(0, "group size added is %d \n", str);  //prints to output
-		}
-	}
-		else if (hashCount == 5) {
-			if (readLineCount % 2 != 0) { 	//if line count even
-				_RPT0(0, "even\n");  //prints to output
-				if (inputHalf == 0) {	//if on first half of input
-					roomNames.push_back(vectorString);
-					for (std::vector<std::string>::const_iterator iter = vectorString.begin(); iter != vectorString.end(); ++iter) {
-						std::string str = *iter;
+			else if (hashCount == 4) {
+				groupSizes = vectorInt;
+				for (std::vector<int>::const_iterator iter = vectorInt.begin(); iter != vectorInt.end(); ++iter) {
+					int str = *iter;
+					_RPT1(0, "group size added is %d \n", str);  //prints to output
+				}
+			}
+			else if (hashCount == 5) {
+				if (readLineCount % 2 != 0) { 	//if line count even
+					_RPT0(0, "even\n");  //prints to output
+					if (inputHalf == 0) {	//if on first half of input
+						teacherNames.push_back(vectorString);
+						for (std::vector<std::string>::const_iterator iter = vectorString.begin(); iter != vectorString.end(); ++iter) {
+							std::string str = *iter;
+							_RPT1(0, "teacher added is %s \n", str.c_str());  //prints to output
+						}
+					}
+					else {					//if on second half of input
+						roomNames.push_back(vectorString);
+						for (std::vector<std::string>::const_iterator iter = vectorString.begin(); iter != vectorString.end(); ++iter) {
+							std::string str = *iter;
 							_RPT1(0, "room added is %s \n", str.c_str());  //prints to output
+						}
 					}
 				}
-				else {					//if on second half of input
-					teacherNames.push_back(vectorString);
-					for (std::vector<std::string>::const_iterator iter = vectorString.begin(); iter != vectorString.end(); ++iter) {
-						std::string str = *iter;
-						_RPT1(0, "teacher added is %s \n", str.c_str());  //prints to output
+				else if (readLineCount % 2 == 0) {	//if line count odd
+					_RPT0(0, "odd\n");  //prints to output
+					if (inputHalf == 0) {
+						teacherHours.push_back(vectorInt);
+						for (std::vector<int>::const_iterator iter = vectorInt.begin(); iter != vectorInt.end(); ++iter) {
+							int str = *iter;
+							_RPT1(0, "teaching hours added is %d \n", str);  //prints to output
+						}
 					}
+					else {
+						roomCapacitys.push_back(vectorInt);
+						for (std::vector<int>::const_iterator iter = vectorInt.begin(); iter != vectorInt.end(); ++iter) {
+							int str = *iter;
+							_RPT1(0, "room capacity added is %d \n", str);  //prints to output
+						}
+					}
+					inputHalf = !inputHalf;	//invert inputHalf
 				}
 			}
-			else if (readLineCount % 2 == 0) {	//if line count odd
-				_RPT0(0, "odd\n");  //prints to output
-				if (inputHalf == 0) {
-					roomCapacitys.push_back(vectorInt);
-					for (std::vector<int>::const_iterator iter = vectorInt.begin(); iter != vectorInt.end(); ++iter) {
-						int str = *iter;
-						_RPT1(0, "room capacity added is %d \n", str);  //prints to output
-					}
-				}
-				else {
-					teacherHours.push_back(vectorInt);
-					for (std::vector<int>::const_iterator iter = vectorInt.begin(); iter != vectorInt.end(); ++iter) {
-						int str = *iter;
-						_RPT1(0, "teaching hours added is %d \n", str);  //prints to output
-					}
-				}
-				inputHalf = !inputHalf;	//invert inputHalf
-			}
-		}
-		else  {				//else fill in subject choices
-			subjectsTaken.push_back(vectorString);
-			for (std::vector<std::string>::const_iterator iter = vectorString.begin(); iter != vectorString.end(); ++iter) {
-				std::string str = *iter;
-			//	_RPT1(0, "subject is %s \n", str.c_str());  //prints to output
+			else {				//else fill in subject choices
+				subjectsTaken.push_back(vectorString);
 			}
 		}
 	}
-	std::vector<std::string> tempTeachers = teacherNames[0];
-	for (std::vector<std::string>::const_iterator iter = tempTeachers.begin(); iter != tempTeachers.end(); ++iter) {
-		std::string str = *iter;
-		_RPT1(0, "teacher is %s \n", str.c_str());  //prints to output
+
+	for (int a = 0; a < groupNames.size(); a++) {
+		std::vector<std::string> subjectsTakenByCurrentGroup = subjectsTaken[a]; //gets the subjects taken by the current group
+	//	_RPT1(0, "subjects taken by group %d are: ", a);  //prints to output
+		for (std::vector<std::string>::const_iterator iter = subjectsTakenByCurrentGroup.begin(); iter != subjectsTakenByCurrentGroup.end(); ++iter) {
+			std::string str = *iter;
+		//	_RPT1(0, "%s\n", str.c_str());  //prints to output
+		}
 	}
+
+
 	_RPT0(0, "leaving\n");  //prints to output
 }
 void LoadTimetable() {
