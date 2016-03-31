@@ -342,7 +342,7 @@ int checkTimetableV2(std::vector<Timetable>& currentTimetables) {			//check all 
 				it = find(subjects.begin(), subjects.end(), subject);	//find the subject in the subjects global vector
 				int globalSubjectNum = std::distance(subjects.begin(), it);	//return the position of the subject
 				if (hoursCurrentSubject > hoursSubject[globalSubjectNum]) {				//if number of hours taken for that subject exceeds total hours required for it
-//					_RPT0(0, "Timetable not feasible, Too many hours for subject\n");  //prints to output
+					_RPT0(0, "Timetable not feasible, Too many hours for subject\n");  //prints to output
 					score++;
 				}
 				currentGroupsSubjectHours[subjectNum]++;		//Add an addtional hour for that group for that subject

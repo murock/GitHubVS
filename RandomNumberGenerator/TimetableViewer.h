@@ -62,6 +62,8 @@ namespace TimetableGui {
 	private: System::Windows::Forms::Label^  onelabel;
 
 	private: System::Windows::Forms::Label^  elevenLabel;
+	private: System::Windows::Forms::Label^  label3;
+	private: System::Windows::Forms::Label^  label2;
 
 
 			 array<System::Windows::Forms::Label^>  ^LabelArr;
@@ -94,6 +96,8 @@ namespace TimetableGui {
 			this->elevenLabel = (gcnew System::Windows::Forms::Label());
 			this->tenLabel = (gcnew System::Windows::Forms::Label());
 			this->nineLabel = (gcnew System::Windows::Forms::Label());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->tableLayoutPanel2->SuspendLayout();
 			this->tableLayoutPanel3->SuspendLayout();
 			this->SuspendLayout();
@@ -131,12 +135,14 @@ namespace TimetableGui {
 				20)));
 			this->tableLayoutPanel1->Location = System::Drawing::Point(103, 130);
 			this->tableLayoutPanel1->Name = L"tableLayoutPanel1";
-			this->tableLayoutPanel1->RowCount = 5;
-			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 20)));
-			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 20)));
-			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 20)));
-			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 20)));
-			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 20)));
+			this->tableLayoutPanel1->RowCount = 7;
+			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 18)));
+			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 18)));
+			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 5)));
+			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 18)));
+			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 5)));
+			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 18)));
+			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 18)));
 			this->tableLayoutPanel1->Size = System::Drawing::Size(905, 646);
 			this->tableLayoutPanel1->TabIndex = 2;
 			// 
@@ -244,20 +250,25 @@ namespace TimetableGui {
 			this->tableLayoutPanel3->ColumnCount = 1;
 			this->tableLayoutPanel3->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
 				100)));
+			this->tableLayoutPanel3->Controls->Add(this->label3, 0, 6);
 			this->tableLayoutPanel3->Controls->Add(this->twolabel, 0, 3);
 			this->tableLayoutPanel3->Controls->Add(this->onelabel, 0, 2);
 			this->tableLayoutPanel3->Controls->Add(this->elevenLabel, 0, 1);
 			this->tableLayoutPanel3->Controls->Add(this->tenLabel, 0, 1);
 			this->tableLayoutPanel3->Controls->Add(this->nineLabel, 0, 0);
-			this->tableLayoutPanel3->Location = System::Drawing::Point(12, 130);
+			this->tableLayoutPanel3->Controls->Add(this->label2, 0, 5);
+			this->tableLayoutPanel3->Location = System::Drawing::Point(2, 130);
 			this->tableLayoutPanel3->Name = L"tableLayoutPanel3";
-			this->tableLayoutPanel3->RowCount = 4;
-			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 20)));
-			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 20)));
-			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 20)));
-			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 20)));
-			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 20)));
-			this->tableLayoutPanel3->Size = System::Drawing::Size(94, 646);
+			this->tableLayoutPanel3->RowCount = 7;
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 18)));
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 18)));
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 5)));
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 18)));
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 5)));
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 18)));
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 18)));
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 20)));
+			this->tableLayoutPanel3->Size = System::Drawing::Size(104, 646);
 			this->tableLayoutPanel3->TabIndex = 5;
 			this->tableLayoutPanel3->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &TimetableViewer::tableLayoutPanel3_Paint);
 			// 
@@ -267,11 +278,11 @@ namespace TimetableGui {
 			this->twolabel->AutoSize = true;
 			this->twolabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->twolabel->Location = System::Drawing::Point(22, 568);
+			this->twolabel->Location = System::Drawing::Point(7, 381);
 			this->twolabel->Name = L"twolabel";
-			this->twolabel->Size = System::Drawing::Size(50, 25);
+			this->twolabel->Size = System::Drawing::Size(89, 25);
 			this->twolabel->TabIndex = 5;
-			this->twolabel->Text = L"2pm";
+			this->twolabel->Text = L"12:30pm";
 			// 
 			// onelabel
 			// 
@@ -279,11 +290,11 @@ namespace TimetableGui {
 			this->onelabel->AutoSize = true;
 			this->onelabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->onelabel->Location = System::Drawing::Point(22, 439);
+			this->onelabel->Location = System::Drawing::Point(7, 307);
 			this->onelabel->Name = L"onelabel";
-			this->onelabel->Size = System::Drawing::Size(50, 25);
+			this->onelabel->Size = System::Drawing::Size(89, 25);
 			this->onelabel->TabIndex = 4;
-			this->onelabel->Text = L"1pm";
+			this->onelabel->Text = L"11:30am";
 			// 
 			// elevenLabel
 			// 
@@ -291,7 +302,7 @@ namespace TimetableGui {
 			this->elevenLabel->AutoSize = true;
 			this->elevenLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->elevenLabel->Location = System::Drawing::Point(16, 310);
+			this->elevenLabel->Location = System::Drawing::Point(21, 234);
 			this->elevenLabel->Name = L"elevenLabel";
 			this->elevenLabel->Size = System::Drawing::Size(61, 25);
 			this->elevenLabel->TabIndex = 3;
@@ -303,7 +314,7 @@ namespace TimetableGui {
 			this->tenLabel->AutoSize = true;
 			this->tenLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->tenLabel->Location = System::Drawing::Point(16, 181);
+			this->tenLabel->Location = System::Drawing::Point(21, 160);
 			this->tenLabel->Name = L"tenLabel";
 			this->tenLabel->Size = System::Drawing::Size(61, 25);
 			this->tenLabel->TabIndex = 2;
@@ -315,11 +326,35 @@ namespace TimetableGui {
 			this->nineLabel->AutoSize = true;
 			this->nineLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->nineLabel->Location = System::Drawing::Point(22, 52);
+			this->nineLabel->Location = System::Drawing::Point(27, 45);
 			this->nineLabel->Name = L"nineLabel";
 			this->nineLabel->Size = System::Drawing::Size(50, 25);
 			this->nineLabel->TabIndex = 1;
 			this->nineLabel->Text = L"9am";
+			// 
+			// label2
+			// 
+			this->label2->Anchor = System::Windows::Forms::AnchorStyles::None;
+			this->label2->AutoSize = true;
+			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label2->Location = System::Drawing::Point(13, 454);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(78, 25);
+			this->label2->TabIndex = 6;
+			this->label2->Text = L"1:30pm";
+			// 
+			// label3
+			// 
+			this->label3->Anchor = System::Windows::Forms::AnchorStyles::None;
+			this->label3->AutoSize = true;
+			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label3->Location = System::Drawing::Point(13, 572);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(78, 25);
+			this->label3->TabIndex = 7;
+			this->label3->Text = L"2:30pm";
 			// 
 			// TimetableViewer
 			// 
@@ -344,17 +379,17 @@ namespace TimetableGui {
 		}
 #pragma endregion
 
-		//added code to make an array of labels CURRENTLY USELESS need to load this form to test it
+		//make an array of labels
 		void InitializeComponent1(void)
 		{
 			//create the label array
-			this->LabelArr = gcnew array<System::Windows::Forms::Label^>(25);
+			this->LabelArr = gcnew array<System::Windows::Forms::Label^>(35);
 			int i = 0;
-			while ( i < 25)
+			while ( i < 35)
 			{
 				this->LabelArr[i] = (gcnew System::Windows::Forms::Label());
 				for (int x = 0; x < 5; x++) {
-					for (int y = 0; y < 5; y++) {
+					for (int y = 0; y < 7; y++) {
 						this->LabelArr[i] = (gcnew System::Windows::Forms::Label());
 
 						this->tableLayoutPanel1->Controls->Add(this->LabelArr[i], x, y);
@@ -390,18 +425,32 @@ namespace TimetableGui {
 		if (checkEmpty.empty())
 			this->label1->Text = L"Invalid Class Name try again";
 		else {
-			for (int periodCount = 0; periodCount < 25; periodCount++) {
-				std::vector<std::string> periods = currentTimetable.getPeriods();	//get the period information for that group
-				std::string currentTeacher = periods[(periodCount * 3 + 1)];		//get current teacher for that period
-				std::string currentRoom = periods[(periodCount * 3 + 2)];		//get current room for that period
-				std::string subject = periods[periodCount * 3];			//get current subject
-				String^ str = msclr::interop::marshal_as< String^ >(subject);
-				String^ str2 = msclr::interop::marshal_as< String^ >(currentTeacher);
-				String^ str3 = msclr::interop::marshal_as< String^ >(currentRoom);
-				if (subject == "Free")
-					this->LabelArr[periodCount]->Text = str;
-				else
-					this->LabelArr[periodCount]->Text = str + "\n" + str2 + "\n" + str3;
+			int periodCountWithBreaks = 0;			//period count with breaks included so 0-34
+			int periodCount = 0;					//period count of subjects so 0-24
+			while ( periodCount < 25) {
+				for (int periodDayCount = 0; periodDayCount < 7; periodDayCount++) {
+					if (periodDayCount == 2) {
+						this->LabelArr[periodCountWithBreaks]->Text = "Break";
+					}
+					else if (periodDayCount == 4) {
+						this->LabelArr[periodCountWithBreaks]->Text = "Lunch";
+					}
+					else {
+						std::vector<std::string> periods = currentTimetable.getPeriods();	//get the period information for that group
+						std::string currentTeacher = periods[(periodCount * 3 + 1)];		//get current teacher for that period
+						std::string currentRoom = periods[(periodCount * 3 + 2)];		//get current room for that period
+						std::string subject = periods[periodCount * 3];			//get current subject
+						String^ str = msclr::interop::marshal_as< String^ >(subject);
+						String^ str2 = msclr::interop::marshal_as< String^ >(currentTeacher);
+						String^ str3 = msclr::interop::marshal_as< String^ >(currentRoom);
+						if (subject == "Free")
+							this->LabelArr[periodCountWithBreaks]->Text = str;
+						else
+							this->LabelArr[periodCountWithBreaks]->Text = str + "\n" + str2 + "\n" + str3;
+						periodCount++;
+					}
+					periodCountWithBreaks++;
+				}
 			}
 		}
 	}
