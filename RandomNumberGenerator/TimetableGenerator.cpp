@@ -122,7 +122,7 @@ int checkMaxHoursReachedV2(std::vector<int>& tempHoursPerSubjectGroup, int group
 }
 
 std::vector<Timetable> GenerateV2() {
-	std::vector<Timetable> timetableChromosome;
+	std::vector<Timetable> returnTimetable;
 	int groupCount = 0;
 	int totalHours = 25;		//total hours taught each week 
 	int periodCount = 0;		//stores current period number being allocated
@@ -214,10 +214,10 @@ std::vector<Timetable> GenerateV2() {
 			//_RPT1(0, "Period Count is %d\n", periodCount);  //prints to output
 		}
 		Timetable groupTimetable(groupNames[groupCount], periodsArray[groupCount]); //save the timetable for the group
-		timetableChromosome.push_back(groupTimetable);	// save the groups timetable to the timetable Chromosome 
+		returnTimetable.push_back(groupTimetable);	// save the groups timetable to the timetable Chromosome 
 		groupCount++;			//go to the next group
 	}
-	return timetableChromosome;
+	return returnTimetable;
 }
 
 bool checkDuplicates(std::vector<std::string>& vec)
@@ -293,7 +293,24 @@ int ScoreTimetable(std::vector<Timetable>& currentTimetables) {		//lower score i
 					}
 				}
 			}
+			
 			//Teacher preference 
+			if (subject != "Free") {
+				std::vector<std::string>::iterator it = find(subjects.begin(), subjects.end(), subject);	//find the subject in the subjects global vector
+				int subjectNum = std::distance(subjects.begin(), it);	//return the position of the subject 
+			//	_RPT1(0, "teacherNames size is %d subjectNum is %d\n", teacherNames.size(), subjectNum);
+				std::vector<std::string> currentSubjectTeachers = teacherNames[subjectNum];	//get current subjects teachers
+				it = find(currentSubjectTeachers.begin(), currentSubjectTeachers.end(), currentTeacher);	//find teacher in current subject teachers
+				int teacherNum = std::distance(currentSubjectTeachers.begin(), it);	//return position of teacher
+			//	_RPT1(0, "teacher preference size is %d subjectNum is %d\n", teacherPreference.size(), subjectNum);
+				std::vector<int> currentPrefTeaching = teacherPreference[subjectNum];	//get current preferred teaching hours
+				if ((periodDayCount >= lunchPeriod) && (currentPrefTeaching[teacherNum] == 0)) {	//if its the afternoon and the teacher prefers teaching mornings then increment score
+					currentScore++;
+				}
+				else if ((periodDayCount < lunchPeriod) && (currentPrefTeaching[teacherNum] == 1)) {	//if its the morning and the teacher prefers teaching afternoons then increment score
+					currentScore++;
+				}
+			}
 			lastPeriod = subject;
 			periodDayCount++;
 		}
@@ -940,7 +957,8 @@ void LoadConfig() {
 		if (s[0] == '#')
 			hashCount++;
 		else {
-			if ((readLineCount % 2 != 0) && (hashCount < 6)) {		//if line count is odd and hashcount is 5 or below read ints
+			_RPT1(0, "readlinecount before check is %d\n", readLineCount);  //prints to output
+			if (((readLineCount % 2 != 0) && (hashCount < 6) && (hashCount != 5))||((hashCount == 5) && (readLineCount == 0 || readLineCount == 1|| readLineCount == 3))) {	//if line count is odd and hashcount is 5 or below read ints OR if in subjectinfo section read ints if line count is 1,2 or 4
 				std::istringstream ss(s);
 				while (ss)
 				{
@@ -963,6 +981,10 @@ void LoadConfig() {
 				}
 				readLineCount++;
 			}
+			if (hashCount == 5) {//if on subject information section of config
+				if (readLineCount == 5)
+					readLineCount = 0;
+			}
 			if (hashCount == 1)
 				subjects = vectorString;
 			else if (hashCount == 2)
@@ -972,23 +994,57 @@ void LoadConfig() {
 			else if (hashCount == 4)
 				groupSizes = vectorInt;
 			else if (hashCount == 5) {
-				if (readLineCount % 2 != 0) { 	//if line count even
-					if (inputHalf == 0) 	//if on first half of input
-						teacherNames.push_back(vectorString);
-					else 				//if on second half of input
-						roomNames.push_back(vectorString);
+				_RPT1(0, "readlinecount is %d\n", readLineCount);  //prints to output
+				for (std::vector<std::string>::const_iterator iter = vectorString.begin(); iter != vectorString.end(); ++iter) {
+					std::string str = *iter;
+					_RPT1(0, "String is %s\n", str.c_str());  //prints to output
 				}
-				else if (readLineCount % 2 == 0) {	//if line count odd
-					if (inputHalf == 0)
-						teacherHours.push_back(vectorInt);
-					else
-						roomCapacitys.push_back(vectorInt);
-					inputHalf = !inputHalf;	//invert inputHalf
+				for (std::vector<int>::const_iterator iter = vectorInt.begin(); iter != vectorInt.end(); ++iter) {
+					int number = *iter;
+					_RPT1(0, "Int is %d\n", number);  //prints to output
+				}
+				if (readLineCount == 0) {
+					teacherNames.push_back(vectorString);
+				}
+				else if (readLineCount == 1) {
+					teacherHours.push_back(vectorInt);
+				}
+				else if (readLineCount == 2){
+					teacherPreference.push_back(vectorInt);
+				}
+				else if (readLineCount == 3) {
+					roomNames.push_back(vectorString);
+				}
+				else if (readLineCount == 4) {
+					roomCapacitys.push_back(vectorInt);
 				}
 			}
 			else {				//else fill in subject choices
 				subjectsTaken.push_back(vectorString);
 			}
+		}
+	}
+	for (std::vector<std::string>::const_iterator iter = subjects.begin(); iter != subjects.end(); ++iter) {
+		std::string str = *iter;
+		_RPT1(0, "Subjects are %s\n", str.c_str());  //prints to output
+	}
+	for (std::vector<int>::const_iterator iter = hoursSubject.begin(); iter != hoursSubject.end(); ++iter) {
+		int number = *iter;
+		_RPT1(0, "hours need for subject is %d\n", number);  //prints to output
+	}
+	for (std::vector<std::string>::const_iterator iter = groupNames.begin(); iter != groupNames.end(); ++iter) {
+		std::string str = *iter;
+		_RPT1(0, "GroupNames are %s\n", str.c_str());  //prints to output
+	}
+	for (std::vector<int>::const_iterator iter = groupSizes.begin(); iter != groupSizes.end(); ++iter) {
+		int number = *iter;
+		_RPT1(0, "Group Sizes are %d\n", number);  //prints to output
+	}
+	for (std::vector<std::vector<std::string>>::const_iterator iter = teacherNames.begin(); iter != teacherNames.end(); ++iter) {
+		std::vector<std::string> currentTeachers = *iter;
+		for (std::vector<std::string>::const_iterator iter2 = currentTeachers.begin(); iter2 != currentTeachers.end(); ++iter2) {
+			std::string str = *iter2;
+			_RPT1(0, "TeacherNames are %s\n", str.c_str());  //prints to output
 		}
 	}
 }
