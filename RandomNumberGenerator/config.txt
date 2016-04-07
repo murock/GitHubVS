@@ -5,23 +5,23 @@ English,Maths,Science,Art,ICT,Humanities,RE,French,Music,PE,PSHE,GCSE ICT,GCSE R
 #Class Names
 7A,7B,7C,8A,8B,8C,9A,9B,9C,10A,10B,10C,11A,11B,11C,12A,12B,12C,13A,13B,13C,
 #Class Sizes
-30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,
+30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,25,25,25,20,20,20,
 #Subject Information (Teachers,Hours Taught,Preference(0 for morning,1 for afternoon),Rooms,Room Capacity)
-Mr English,Miss English,Dr English,Ms English
+Mr English,Miss English,Dr English,Ms English,
 8,8,8,12
-0,0,0,0,
+0,0,1,1,
 E1,E2,E3,E4,
 30,30,30,30,
 Mr Maths,Miss Maths,
 18,12,
-0,0,
+0,1,
 M1,M2,M3,
 30,30,30, 
 Mr Sci,Miss Sci,
 15,15,
-0,0,
+0,1,
 S1,S2,S3,S4,
-30,30,30,30
+30,30,30,25,
 Mr Art,Miss Art,
 15,15,
 0,0,
@@ -34,17 +34,17 @@ IT1,IT2
 30,30
 Mr Hum,Miss Hum,Dr Hum,
 12,12,12,
-0,0,0,
+0,1,1,
 H1,H2,H3,H4,
 30,30,30,30,
 Mr RE,Miss RE,
 5,5,
-0,0,
+0,1,
 R1,R2,R3,R4,R5
-30,30,30,30,30
+30,30,30,30,25
 Mr French,Miss French,
 10,10,
-0,0,
+1,0,
 L1,L2,
 30,30,
 Mr Music,Miss Music,
@@ -61,7 +61,7 @@ Mr PSHE,Miss PSHE,
 5,5,
 0,0,
 R1,R2,R3,R4,R5
-30,30,30,30,30
+30,30,30,30,25
 Mr ICT,Miss ICT,
 6,6,
 0,0,
@@ -71,10 +71,10 @@ Mr RE,Miss RE,
 6,6,
 0,0,
 R1,R2,R3,R4,R5
-30,30,30,30,30
+30,30,30,30,25
 Mr English,Miss English,Dr English,Ms English,
 8,8,4,4,
-0,0,0,0,
+0,0,1,1,
 E1,E2,E3,E4,
 30,30,30,30,
 Dr Maths,Ms Maths
@@ -84,7 +84,7 @@ M1,M2,M3,
 30,30,30,
 Mr French,Miss French,
 6,3,
-0,0,
+1,0,
 L1,L2,
 30,30,
 Mr Music,Miss Music,
@@ -104,22 +104,22 @@ A1,A2,
 30,30
 Dr Sci,Ms Sci,
 4,4,
-0,0,
+0,1,
 S1,S2,S3,S4,
-30,30,30,30
+30,30,30,25,
 Dr Sci,Ms Sci,
 2,2,
-0,0,
+0,1,
 S1,S2,S3,S4,
-30,30,30,30
+30,30,30,25,
 Dr Sci,Ms Sci,
 2,4,
-0,0,
+0,1,
 S1,S2,S3,S4,
-30,30,30,30
+30,30,30,25,
 Dr Hum,Ms Hum,
 6,6,
-0,0,
+1,0,
 H1,H2,H3,H4,
 30,30,30,30,
 Ms Hum,
@@ -131,42 +131,42 @@ Mr PSHE,Miss PSHE,
 4,4,
 0,0,
 R1,R2,R3,R4,R5
-30,30,30,30,30
+30,30,30,30,25,
 Mr Hum,Miss Hum,
 8,4,
-0,0,
+0,1,
 H1,H2,H3,H4,
 30,30,30,30,
 Miss Maths,Ms Maths
 8,4,
-0,0,
+1,0,
 M1,M2,M3,
 30,30,30, 
 Mr Psy,Miss Psy,
 8,4,
 0,0,
 R1,R2,R3,R4,R5
-30,30,30,30,30
+30,30,30,30,25,
 Mr English,Miss English,Dr English,
 4,4,4,
-0,0,0,
+0,0,1,
 E1,E2,E3,E4,
 30,30,30,30,
 Mr Soc,Miss Soc,
 8,4,
-0,0,
+0,1,
 R1,R2,R3,R4,R5
-30,30,30,30,30
+30,30,30,30,25,
 Mr Law,Miss Law,
 15,15,
 0,0,
 R1,R2,R3,R4,R5
-30,30,30,30,30
+30,30,30,30,25,
 Dr Sci,Ms Sci,
 8,4,
 0,0,
 S1,S2,S3,S4,
-30,30,30,30
+30,30,30,25,
 #Subject Choices
 English,Maths,Science,Art,ICT,Humanities,RE,French,Music,PE,PSHE,
 English,Maths,Science,Art,ICT,Humanities,RE,French,Music,PE,PSHE,

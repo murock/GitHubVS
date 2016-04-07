@@ -137,6 +137,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ConfigHelp.cpp" />
     <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="mylib.cpp" />
     <ClCompile Include="Setup.cpp" />
@@ -147,6 +148,9 @@
     <ClCompile Include="TimetableViewer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConfigHelp.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -165,6 +169,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ConfigHelp.resx">
+      <DependentUpon>ConfigHelp.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MyForm.resx">
       <DependentUpon>MyForm.h</DependentUpon>
     </EmbeddedResource>

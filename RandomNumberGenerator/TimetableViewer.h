@@ -91,13 +91,13 @@ namespace TimetableGui {
 			this->tuesdayLabel = (gcnew System::Windows::Forms::Label());
 			this->MondayLabel = (gcnew System::Windows::Forms::Label());
 			this->tableLayoutPanel3 = (gcnew System::Windows::Forms::TableLayoutPanel());
+			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->twolabel = (gcnew System::Windows::Forms::Label());
 			this->onelabel = (gcnew System::Windows::Forms::Label());
 			this->elevenLabel = (gcnew System::Windows::Forms::Label());
 			this->tenLabel = (gcnew System::Windows::Forms::Label());
 			this->nineLabel = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
-			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->tableLayoutPanel2->SuspendLayout();
 			this->tableLayoutPanel3->SuspendLayout();
 			this->SuspendLayout();
@@ -105,11 +105,13 @@ namespace TimetableGui {
 			// label1
 			// 
 			this->label1->AutoSize = true;
+			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->label1->Location = System::Drawing::Point(32, 13);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(216, 13);
+			this->label1->Size = System::Drawing::Size(261, 16);
 			this->label1->TabIndex = 0;
-			this->label1->Text = L"Type the Class\'s Timetable you want to view";
+			this->label1->Text = L"Insert the Class Timetable you want to view";
 			// 
 			// textBox1
 			// 
@@ -148,9 +150,11 @@ namespace TimetableGui {
 			// 
 			// enterTimetableButton
 			// 
-			this->enterTimetableButton->Location = System::Drawing::Point(282, 43);
+			this->enterTimetableButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->enterTimetableButton->Location = System::Drawing::Point(250, 36);
 			this->enterTimetableButton->Name = L"enterTimetableButton";
-			this->enterTimetableButton->Size = System::Drawing::Size(69, 19);
+			this->enterTimetableButton->Size = System::Drawing::Size(95, 31);
 			this->enterTimetableButton->TabIndex = 3;
 			this->enterTimetableButton->Text = L"Enter";
 			this->enterTimetableButton->UseVisualStyleBackColor = true;
@@ -272,6 +276,18 @@ namespace TimetableGui {
 			this->tableLayoutPanel3->TabIndex = 5;
 			this->tableLayoutPanel3->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &TimetableViewer::tableLayoutPanel3_Paint);
 			// 
+			// label3
+			// 
+			this->label3->Anchor = System::Windows::Forms::AnchorStyles::None;
+			this->label3->AutoSize = true;
+			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label3->Location = System::Drawing::Point(13, 572);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(78, 25);
+			this->label3->TabIndex = 7;
+			this->label3->Text = L"2:30pm";
+			// 
 			// twolabel
 			// 
 			this->twolabel->Anchor = System::Windows::Forms::AnchorStyles::None;
@@ -343,18 +359,6 @@ namespace TimetableGui {
 			this->label2->Size = System::Drawing::Size(78, 25);
 			this->label2->TabIndex = 6;
 			this->label2->Text = L"1:30pm";
-			// 
-			// label3
-			// 
-			this->label3->Anchor = System::Windows::Forms::AnchorStyles::None;
-			this->label3->AutoSize = true;
-			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label3->Location = System::Drawing::Point(13, 572);
-			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(78, 25);
-			this->label3->TabIndex = 7;
-			this->label3->Text = L"2:30pm";
 			// 
 			// TimetableViewer
 			// 

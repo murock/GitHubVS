@@ -458,7 +458,7 @@ std::vector<Timetable> randomMutation(std::vector<Timetable>& currentTimetables,
 	}
 	return currentTimetables;
 }
-
+//no longer used
 std::vector<Timetable> mutation(std::vector<Timetable>& currentTimetables, int numMutation) {
 	int Rnum = rand();
 	int duplicateSelect = (Rnum % 2);	//get a random number 0 or 1
@@ -572,32 +572,16 @@ timetableScore giveScore(std::vector<Timetable>& scoringTimetable) {
 	scoredTimetable.setTimetable(scoringTimetable);
 	int a = ScoreTimetable(scoringTimetable);
 	int b = checkTimetableV2(scoringTimetable);
-	int score = (a*0.1) + b;//ScoreTimetable(scoringTimetable) + (checkTimetableV2(scoringTimetable) * 4);	//value meeting hard constraints over soft constraints
+	int score = (a*0.25) + (b*2);//ScoreTimetable(scoringTimetable) + (checkTimetableV2(scoringTimetable) * 4);	//value meeting hard constraints over soft constraints
 //	_RPT1(0, "%d Hard violations %d Soft violations total score is %d\n", b, a, score);  //prints to output
 	scoredTimetable.setScore(score);
 	return scoredTimetable;
 }
-
-std::vector<timetableScore> createInitalPopulation(int populationSize) {
-	std::vector<timetableScore> population;
-	for (int i = 0; i < populationSize; i++) {
-		_RPT1(0, "population size is %d\n", i);  //prints to output
-		std::vector<Timetable> tempTimetables = GenerateV2();
-		population.push_back(giveScore(tempTimetables));
-	}
-	return population;
-}
-
-void SaveTimetable(std::string name) {
-
-	std::ofstream output_file(name + "savedTimetables.txt");
-	std::ostream_iterator<std::string> output_iterator(output_file, ",");
-	for (std::vector<Timetable>::const_iterator iter = Timetables.begin(); iter != Timetables.end(); ++iter) {
-		Timetable currentTimetable = *iter;
-		std::vector<std::string> currentPeriods = currentTimetable.getPeriods();
-		std::copy(currentPeriods.begin(), currentPeriods.end(), output_iterator);
-		output_file << std::endl;
-	}
+void printScore(std::vector<Timetable>& scoringTimetable) {
+	int a = ScoreTimetable(scoringTimetable);
+	int b = checkTimetableV2(scoringTimetable);
+//	int score = (a*0.25) + (b * 2);//ScoreTimetable(scoringTimetable) + (checkTimetableV2(scoringTimetable) * 4);	//value meeting hard constraints over soft constraints
+	_RPT1(0, "%d Hard violations broken %d Soft violations broken\n", b, a);  //prints to output
 }
 
 int selectParent(std::vector<timetableScore>& population, int totalPopScore, int previousIterator) {
@@ -620,11 +604,15 @@ int selectParent(std::vector<timetableScore>& population, int totalPopScore, int
 	return selectionIterator - 1; //as the loop increments 1 too many times
 }
 
-std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<timetableScore>& population, bool initalPopCheck, int populationSize, int elitismNum) {
+std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<timetableScore>& population, bool initalPopCheck, int populationSize, int elitismNum, int addtionalPop, int maxMutation) {
 	if (initalPopCheck == 1) {
-		population = createInitalPopulation(populationSize);
+		//population = createInitalPopulation(populationSize);
+		for (int i = 0; i < populationSize; i++) {
+			_RPT1(0, "population size is %d\n", i);  //prints to output
+			std::vector<Timetable> tempTimetables = GenerateV2();
+			population.push_back(giveScore(tempTimetables));
+		}
 	}
-	_RPT0(0, "test\n");  //prints to output
 //	int crossoverPoint = groupNames.size() / 2;
 
 	std::ofstream totalscore_file("totalscores.txt");	//for use in graphs DELETE LATER
@@ -650,9 +638,10 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 		//memberCount = 0;*/
 		int totalPopScore = 0;
 		memberCount = 0;
+		//loop below used to get the total score for parent selection
 		for (std::vector<timetableScore>::const_iterator iter = population.begin(); iter != population.end(); ++iter) {
-			timetableScore test = *iter;
-			int x = test.getScore();
+			timetableScore currentMember = *iter;
+			int x = currentMember.getScore();
 			_RPT1(0, "Member %d's score is %d\n", memberCount, x);  //prints to output
 			memberCount++;
 			totalPopScore = totalPopScore + x;
@@ -689,7 +678,7 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 
 
 		//new breeding code
-		while (childPopulation.size() < population.size()*2) {
+		while (childPopulation.size() < population.size() + addtionalPop) {
 //			_RPT1(0, "child pop is %d\n", childPopulation.size());
 			int parent1Iterator = selectParent(population, totalPopScore, population.size() + 2);
 		//	_RPT1(0, "parent 1 iterator is %d\n", parent1Iterator);  //prints to output
@@ -720,10 +709,10 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 				child2.push_back(parent1Timetables[k]);
 				child1.push_back(parent2Timetables[k]);
 			}
-			int numMutation = (Rnum % 10 + 1);		//get a random number between 1 and maximum number of mutations
+			int numMutation = (Rnum % maxMutation + 1);		//get a random number between 1 and maximum number of mutations
 			child1 = randomMutation(child1,numMutation);
 			Rnum = rand();
-			numMutation = (Rnum % 10 + 1);		//get a random number between 1 and maximum number of mutations
+			numMutation = (Rnum % maxMutation + 1);		//get a random number between 1 and maximum number of mutations
 			child2 = randomMutation(child2,numMutation);
 			childPopulation.push_back(giveScore(child1));
 			childPopulation.push_back(giveScore(child2));
@@ -767,9 +756,47 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 	}
 	std::sort(population.begin(), population.end());
 	Timetables = population[0].getTimetable();
+	printScore(Timetables);
 	return population;
 }
 
+
+void SaveTimetable() {
+
+	std::ofstream output_file("savedTimetables.txt");
+	std::ostream_iterator<std::string> output_iterator(output_file, ",");
+	for (std::vector<Timetable>::const_iterator iter = Timetables.begin(); iter != Timetables.end(); ++iter) {
+		Timetable currentTimetable = *iter;
+		std::vector<std::string> currentPeriods = currentTimetable.getPeriods();
+		std::copy(currentPeriods.begin(), currentPeriods.end(), output_iterator);
+		output_file << std::endl;
+	}
+}
+
+void LoadTimetable() {
+	for (std::vector<std::string>::const_iterator iter = groupNames.begin(); iter != groupNames.end(); ++iter) {
+		Timetable currentTimetable;
+		currentTimetable.setGroup(*iter);	//give the group name to the timetable object
+		Timetables.push_back(currentTimetable);	//save timetable to global timetables vector
+	}
+	std::ifstream infile("savedTimetables.txt");
+	for (int i = 0; infile; i++)
+	{
+		std::string s;
+		if (!getline(infile, s)) break;
+		std::istringstream ss(s);
+		std::vector<std::string> periods;
+		while (ss)
+		{
+			std::string s;
+			if (!getline(ss, s, ',')) break;
+			periods.push_back(s);
+		}
+		Timetable currentTimetable = Timetables[i];	//get the current timetable
+		currentTimetable.setPeriods(periods); //give the periods information to the timetable object
+		Timetables[i] = currentTimetable;	//save to global timetable vector
+	}
+}
 void DefaultValues() {
 	subjects = { "English", "Maths","Science","Art" ,"ICT","Humanities","RE","French","Music",
 		"PE","PSHE","History","A-Level Maths","Psychology","A-Level English","Sociology","Law","Physics" };	//subject names 
@@ -957,7 +984,7 @@ void LoadConfig() {
 		if (s[0] == '#')
 			hashCount++;
 		else {
-			_RPT1(0, "readlinecount before check is %d\n", readLineCount);  //prints to output
+		//	_RPT1(0, "readlinecount before check is %d\n", readLineCount);  //prints to output
 			if (((readLineCount % 2 != 0) && (hashCount < 6) && (hashCount != 5))||((hashCount == 5) && (readLineCount == 0 || readLineCount == 1|| readLineCount == 3))) {	//if line count is odd and hashcount is 5 or below read ints OR if in subjectinfo section read ints if line count is 1,2 or 4
 				std::istringstream ss(s);
 				while (ss)
@@ -994,14 +1021,14 @@ void LoadConfig() {
 			else if (hashCount == 4)
 				groupSizes = vectorInt;
 			else if (hashCount == 5) {
-				_RPT1(0, "readlinecount is %d\n", readLineCount);  //prints to output
+			//	_RPT1(0, "readlinecount is %d\n", readLineCount);  //prints to output
 				for (std::vector<std::string>::const_iterator iter = vectorString.begin(); iter != vectorString.end(); ++iter) {
 					std::string str = *iter;
-					_RPT1(0, "String is %s\n", str.c_str());  //prints to output
+			//		_RPT1(0, "String is %s\n", str.c_str());  //prints to output
 				}
 				for (std::vector<int>::const_iterator iter = vectorInt.begin(); iter != vectorInt.end(); ++iter) {
 					int number = *iter;
-					_RPT1(0, "Int is %d\n", number);  //prints to output
+				//	_RPT1(0, "Int is %d\n", number);  //prints to output
 				}
 				if (readLineCount == 0) {
 					teacherNames.push_back(vectorString);
@@ -1024,7 +1051,7 @@ void LoadConfig() {
 			}
 		}
 	}
-	for (std::vector<std::string>::const_iterator iter = subjects.begin(); iter != subjects.end(); ++iter) {
+/*	for (std::vector<std::string>::const_iterator iter = subjects.begin(); iter != subjects.end(); ++iter) {
 		std::string str = *iter;
 		_RPT1(0, "Subjects are %s\n", str.c_str());  //prints to output
 	}
@@ -1046,7 +1073,7 @@ void LoadConfig() {
 			std::string str = *iter2;
 			_RPT1(0, "TeacherNames are %s\n", str.c_str());  //prints to output
 		}
-	}
+	}*/
 }
 //test code
 int selectParentTest(std::vector<int> population, int totalPopScore, int previousIterator) {
@@ -1142,6 +1169,26 @@ void testSelector() {
 	}
 // test code
 //OLD CODE
+std::vector<timetableScore> createInitalPopulation(int populationSize) {
+	std::vector<timetableScore> population;
+	for (int i = 0; i < populationSize; i++) {
+		_RPT1(0, "population size is %d\n", i);  //prints to output
+		std::vector<Timetable> tempTimetables = GenerateV2();
+		population.push_back(giveScore(tempTimetables));
+	}
+	return population;
+}
+void SaveTimetable1(std::string name) {
+
+	std::ofstream output_file(name + "savedTimetables.txt");
+	std::ostream_iterator<std::string> output_iterator(output_file, ",");
+	for (std::vector<Timetable>::const_iterator iter = Timetables.begin(); iter != Timetables.end(); ++iter) {
+		Timetable currentTimetable = *iter;
+		std::vector<std::string> currentPeriods = currentTimetable.getPeriods();
+		std::copy(currentPeriods.begin(), currentPeriods.end(), output_iterator);
+		output_file << std::endl;
+	}
+}
 std::vector<std::string> AssignTimetable(int periodCount, std::vector<std::vector<std::string>> periodsArray, int groupCount, int subjectNum, std::vector<std::string> currentGroupsTeachers, int teacherPosition, std::vector<std::string> tempRoomNames, int roomNum) {
 	std::vector<std::string> periods = periodsArray[groupCount];	//create periods vector from the periods array
 	if (currentGroupsTeachers[teacherPosition] == "FreeTeacher") {
@@ -1448,42 +1495,7 @@ void SaveTeachers() {
 		output_file << std::endl;
 	}
 }
-void SaveTimetable1() {
 
-	std::ofstream output_file("savedTimetables.txt");
-	std::ostream_iterator<std::string> output_iterator(output_file, ",");
-	for (std::vector<Timetable>::const_iterator iter = Timetables.begin(); iter != Timetables.end(); ++iter) {
-		Timetable currentTimetable = *iter;
-		std::vector<std::string> currentPeriods = currentTimetable.getPeriods();
-		std::copy(currentPeriods.begin(), currentPeriods.end(), output_iterator);
-		output_file << std::endl;
-	}
-}
-
-void LoadTimetable() {
-	for (std::vector<std::string>::const_iterator iter = groupNames.begin(); iter != groupNames.end(); ++iter) {
-		Timetable currentTimetable;
-		currentTimetable.setGroup(*iter);	//give the group name to the timetable object
-		Timetables.push_back(currentTimetable);	//save timetable to global timetables vector
-	}
-	std::ifstream infile("orginalsavedTimetables.txt");
-	for (int i = 0; infile; i++)
-	{
-		std::string s;
-		if (!getline(infile, s)) break;
-		std::istringstream ss(s);
-		std::vector<std::string> periods;
-		while (ss)
-		{
-			std::string s;
-			if (!getline(ss, s, ',')) break;
-			periods.push_back(s);
-		}
-		Timetable currentTimetable = Timetables[i];	//get the current timetable
-		currentTimetable.setPeriods(periods); //give the periods information to the timetable object
-		Timetables[i] = currentTimetable;	//save to global timetable vector
-	}
-}
 
 /*
 void CreateTimetablePopulation() {
