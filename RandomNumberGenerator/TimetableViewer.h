@@ -395,12 +395,9 @@ namespace TimetableGui {
 				for (int x = 0; x < 5; x++) {
 					for (int y = 0; y < 7; y++) {
 						this->LabelArr[i] = (gcnew System::Windows::Forms::Label());
-
 						this->tableLayoutPanel1->Controls->Add(this->LabelArr[i], x, y);
-
 						this->LabelArr[i]->AutoSize = true;
 						this->LabelArr[i]->Location = System::Drawing::Point(3, 0);
-					//	this->LabelArr[i]->Name = L"label" + i;
 						this->LabelArr[i]->Size = System::Drawing::Size(35, 13);
 						this->LabelArr[i]->TabIndex = 0;
 						this->LabelArr[i]->Text = L"Blank Period";

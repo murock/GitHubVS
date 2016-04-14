@@ -138,10 +138,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConfigHelp.cpp" />
-    <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="mylib.cpp" />
     <ClCompile Include="Setup.cpp" />
-    <ClCompile Include="TeacherSetup.cpp" />
     <ClCompile Include="Timetable.cpp" />
     <ClCompile Include="TimetableGenerator.cpp" />
     <ClCompile Include="timetableScore.cpp" />
@@ -151,14 +149,8 @@
     <ClInclude Include="ConfigHelp.h">
       <FileType>CppForm</FileType>
     </ClInclude>
-    <ClInclude Include="MyForm.h">
-      <FileType>CppForm</FileType>
-    </ClInclude>
     <ClInclude Include="mylib.h" />
     <ClInclude Include="Setup.h">
-      <FileType>CppForm</FileType>
-    </ClInclude>
-    <ClInclude Include="TeacherSetup.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Timetable.h" />
@@ -171,9 +163,6 @@
   <ItemGroup>
     <EmbeddedResource Include="ConfigHelp.resx">
       <DependentUpon>ConfigHelp.h</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MyForm.resx">
-      <DependentUpon>MyForm.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Setup.resx">
       <DependentUpon>Setup.h</DependentUpon>

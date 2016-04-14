@@ -599,7 +599,7 @@ int selectParent(std::vector<timetableScore>& population, int totalPopScore, int
 			selectionIterator++;
 			iter++;
 		} while (iter != population.end() && selectionNum > 0);
-	} while (previousIterator - 1 == selectionIterator);	//if same parent is picked loop again
+	} while (previousIterator + 1 == selectionIterator);	//if same parent is picked loop again
 //	_RPT1(0, "return iterator is %d\n", selectionIterator -1);  //prints to output
 	return selectionIterator - 1; //as the loop increments 1 too many times
 }
@@ -689,6 +689,9 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 		//	_RPT1(0, "parent 2 iterator is %d\n", parent2Iterator);  //prints to output
 			int selectParent2 = populationSize - parent2Iterator - 1;		//population size - iterator as a lower score is better 
 		//	_RPT1(0, "Timetable %d has been selected as parent 2\n", selectParent2);  //prints to output
+			if (parent1Iterator == parent2Iterator) {
+				_RPT1(0, "parent 1 iterator is %d parent 2 is %d\n", parent1Iterator, parent2Iterator);  //prints to output
+			}
 			timetableFreq[selectParent2]++;
 			timetableScore parent1 = population[selectParent1];
 			std::vector<Timetable> parent1Timetables = parent1.getTimetable();
@@ -712,7 +715,7 @@ std::vector<timetableScore> optimiseTimetable(int maxIterations, std::vector<tim
 			int numMutation = (Rnum % maxMutation + 1);		//get a random number between 1 and maximum number of mutations
 			child1 = randomMutation(child1,numMutation);
 			Rnum = rand();
-			numMutation = (Rnum % maxMutation + 1);		//get a random number between 1 and maximum number of mutations
+			numMutation = (Rnum % maxMutation + 1 );		//get a random number between 1 and maximum number of mutations
 			child2 = randomMutation(child2,numMutation);
 			childPopulation.push_back(giveScore(child1));
 			childPopulation.push_back(giveScore(child2));

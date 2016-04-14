@@ -15,13 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MyForm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Setup.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TeacherSetup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mylib.cpp">
@@ -44,13 +38,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MyForm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Setup.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TeacherSetup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mylib.h">
@@ -80,6 +68,9 @@
       <Filter>Resource Files</Filter>
     </EmbeddedResource>
     <EmbeddedResource Include="TimetableViewer.resx">
+      <Filter>Resource Files</Filter>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigHelp.resx">
       <Filter>Resource Files</Filter>
     </EmbeddedResource>
   </ItemGroup>
