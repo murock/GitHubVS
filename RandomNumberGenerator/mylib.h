@@ -19,8 +19,7 @@ extern std::vector<std::vector<std::string>> roomNames; //room names with respec
 extern std::vector<std::vector<int>> roomCapacitys;//room capacitys with respect to subject
 extern std::vector<std::vector<std::string>> subjectsTaken; //subjects taken with respect to class's(groupNames)
 extern std::vector<std::vector<std::string>> attachedTeachers; //store the groups with there attached teacher for each subject so every other position is a subject then the teacher
-extern std::vector<Timetable> Timetables;	//stores the timetables for each group
+extern std::vector<Timetable> timetables;	//stores the timetables for each group
 extern std::vector<std::vector<int>> teacherPreference;	//if 0 then pref morning if 1 then pref afternoon
-extern std::vector<int> TESTselectionNumCount;
 extern std::vector<timetableScore> populationGlobal;
 #endif

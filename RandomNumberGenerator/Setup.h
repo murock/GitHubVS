@@ -71,6 +71,7 @@ namespace TimetableGui {
 
 
 
+
 	protected:
 
 	private:
@@ -361,23 +362,17 @@ private: System::Void advButton_Click(System::Object^  sender, System::EventArgs
 	mutTextBox->Text = temp;
 }
 private: System::Void preconButton_Click(System::Object^  sender, System::EventArgs^  e) {
-//	populationGlobal = optimiseTimetable(2, populationGlobal, 0, 10, 2, 10, 10);
-//	ClearGlobals();
-//	DefaultValues();
-	ClearGlobals();
-	LoadConfig();
+	clearGlobals();
+	loadConfig();
 	LoadTimetable();
 	TimetableViewer ^ form = gcnew TimetableViewer;
 	form->ShowDialog();
 }
 private: System::Void configButton_Click(System::Object^  sender, System::EventArgs^  e) {
-	ClearGlobals();
-	LoadConfig();
-	_RPT0(0, "attach\n");  //prints to output
-	AttachTeachertoGroup();
-	_RPT0(0, "optimise\n");  //prints to output
+	clearGlobals();
+	loadConfig();
+	attachTeacherToGroup();
 	populationGlobal = optimiseTimetable(generations, populationGlobal, 1, popSize, elitism, culling, mutation);
-	_RPT0(0, "finish optimise\n");  //prints to output
 	TimetableViewer ^ form = gcnew TimetableViewer;
 	form->ShowDialog();
 }

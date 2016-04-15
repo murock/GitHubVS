@@ -415,7 +415,7 @@ namespace TimetableGui {
 		temp = System::Convert::ToString(textBox1->Text);	//gets the text from the textbox saves it to temp
 		std::string groupName = msclr::interop::marshal_as< std::string >(temp); // converts from a String^ to a std::string
 		Timetable currentTimetable;
-		for (std::vector<Timetable>::const_iterator iter = Timetables.begin(); iter != Timetables.end(); ++iter) {			//iterate through Timetables vector
+		for (std::vector<Timetable>::const_iterator iter = timetables.begin(); iter != timetables.end(); ++iter) {			//iterate through Timetables vector
 			Timetable timetableCheck = *iter;
 			if (groupName == timetableCheck.getGroup()) {
 				currentTimetable = *iter;
