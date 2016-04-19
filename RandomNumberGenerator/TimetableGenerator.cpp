@@ -413,6 +413,12 @@ void printScore(std::vector<Timetable>& scoringTimetable) {
 	int a = scoreTimetable(scoringTimetable);
 	int b = checkTimetable(scoringTimetable);
 	_RPT1(0, "%d Hard violations broken %d Soft violations broken\n", b, a);  //prints to output
+	std::ofstream constraint_file("constraintViolations.txt");	//create a text file to contain best scores each generation
+	constraint_file << "Hard constraint violations: ";
+	constraint_file << b;
+	constraint_file << std::endl;
+	constraint_file << "Soft constraint violations: ";
+	constraint_file << a;
 }
 
 int selectParent(std::vector<timetableScore>& population, int totalPopScore, int previousIterator) {
