@@ -1,5 +1,6 @@
 #pragma once
 #include "mylib.h"
+#include "Stats.h"
 namespace TimetableGui {
 
 	using namespace System;
@@ -64,6 +65,8 @@ namespace TimetableGui {
 	private: System::Windows::Forms::Label^  elevenLabel;
 	private: System::Windows::Forms::Label^  label3;
 	private: System::Windows::Forms::Label^  label2;
+	private: System::Windows::Forms::Button^  statsButton;
+
 
 
 			 array<System::Windows::Forms::Label^>  ^LabelArr;
@@ -98,6 +101,7 @@ namespace TimetableGui {
 			this->tenLabel = (gcnew System::Windows::Forms::Label());
 			this->nineLabel = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->statsButton = (gcnew System::Windows::Forms::Button());
 			this->tableLayoutPanel2->SuspendLayout();
 			this->tableLayoutPanel3->SuspendLayout();
 			this->SuspendLayout();
@@ -360,11 +364,24 @@ namespace TimetableGui {
 			this->label2->TabIndex = 6;
 			this->label2->Text = L"1:30pm";
 			// 
+			// statsButton
+			// 
+			this->statsButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->statsButton->Location = System::Drawing::Point(887, 22);
+			this->statsButton->Name = L"statsButton";
+			this->statsButton->Size = System::Drawing::Size(95, 31);
+			this->statsButton->TabIndex = 7;
+			this->statsButton->Text = L"Statistics";
+			this->statsButton->UseVisualStyleBackColor = true;
+			this->statsButton->Click += gcnew System::EventHandler(this, &TimetableViewer::statsButton_Click);
+			// 
 			// TimetableViewer
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1020, 788);
+			this->Controls->Add(this->statsButton);
 			this->Controls->Add(this->tableLayoutPanel3);
 			this->Controls->Add(this->tableLayoutPanel2);
 			this->Controls->Add(this->enterTimetableButton);
@@ -457,5 +474,9 @@ namespace TimetableGui {
 	}
 private: System::Void tableLayoutPanel3_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
 }
+	private: System::Void statsButton_Click(System::Object^  sender, System::EventArgs^  e) {
+		Stats ^ form = gcnew Stats;
+		form->ShowDialog();
+	}
 };
 }

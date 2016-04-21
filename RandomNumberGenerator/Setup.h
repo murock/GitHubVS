@@ -304,7 +304,7 @@ namespace TimetableGui {
 
 		}
 #pragma endregion
-		int generations = 230, popSize = 30, elitism = 5, culling = 25, mutation = 1;		//default values for GA algorithm adjustment factors
+		int generations = 50, popSize = 30, elitism = 5, culling = 25, mutation = 1;		//default values for GA algorithm adjustment factors
 
 	private: System::Void Setup_Load(System::Object^  sender, System::EventArgs^  e) {
 	}
