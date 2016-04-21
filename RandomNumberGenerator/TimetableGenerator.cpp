@@ -21,6 +21,7 @@ void clearGlobals() {
 	attachedTeachers.clear();
 	timetables.clear();
 	teacherPreference.clear();
+	populationGlobal.clear();
 }
 
 void attachTeacherToGroup() {
@@ -445,6 +446,7 @@ std::vector<timetableScore> optimiseTimetable(int generations, std::vector<timet
 	std::ofstream bestscore_file("bestscores.txt");	//create a text file to contain best scores each generation
 	int memberCount = 0;
 	auto engine = std::default_random_engine{};
+//	int b = checkTimetable(population[0].getTimetable());	//get hard constraints score
 	for (int i = 0; i < generations; i++) {
 		_RPT1(0, "Generation count is %d\n", i);  //prints to output
 		std::sort(population.begin(), population.end());
